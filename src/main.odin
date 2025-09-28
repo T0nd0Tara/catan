@@ -50,7 +50,6 @@ init_board :: proc(game: ^Game) {
       base : [6]u8 = ---;
       defer first_tile_of_row += row_length;
       defer first_vertex_index = int(base[3]) + int(row >= TILE_ROWS / 2);
-      fmt.println("first_vertex_index: ",first_vertex_index);
 
       tapering : int = int(row > TILE_ROWS / 2);
       base = [6]u8{
