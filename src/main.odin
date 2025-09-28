@@ -14,7 +14,7 @@ TileType :: enum {
   SHEEP,
 }
 
-TileSprites : [len(TileType)]rl.Texture;
+TileSprites : [TileType]rl.Texture;
 Tile :: struct {
   type : TileType,
 
@@ -53,12 +53,12 @@ init_game :: proc(game: ^Game) {
   gen_board(game);
 
   TileSprites = {
-    rl.LoadTexture("resources/hexes/vector/desert.png"),
-    rl.LoadTexture("resources/hexes/vector/forest.png"),
-    rl.LoadTexture("resources/hexes/vector/mountain.png"),
-    rl.LoadTexture("resources/hexes/vector/hill.png"),
-    rl.LoadTexture("resources/hexes/vector/field.png"),
-    rl.LoadTexture("resources/hexes/vector/pasture.png"),
+    .DESERT = rl.LoadTexture("resources/hexes/vector/desert.png"),
+    .WOOD = rl.LoadTexture("resources/hexes/vector/forest.png"),
+    .STONE = rl.LoadTexture("resources/hexes/vector/mountain.png"),
+    .CLAY = rl.LoadTexture("resources/hexes/vector/hill.png"),
+    .WHEAT = rl.LoadTexture("resources/hexes/vector/field.png"),
+    .SHEEP = rl.LoadTexture("resources/hexes/vector/pasture.png"),
   };
 
 }
@@ -79,6 +79,17 @@ draw_game :: proc(game: ^Game) {
   draw_board(game);
 }
 
+get_hex_pos :: proc(
+  x, y: int,
+  w, h, side : f32,
+  x_offset: f32,
+  screen_center: rl.Vector2
+  ) -> rl.Vector2 {
+    poly_center := screen_center;
+    poly_center[0] += (f32(x) - x_offset) * w;
+    poly_center[1] += (f32(y) - 2) * (h + side) / 2;
+    return poly_center;
+}
 draw_board :: proc(game: ^Game) {
   screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)};
   radius : f32 = 80;
@@ -87,34 +98,33 @@ draw_board :: proc(game: ^Game) {
   w    := 2 * radius * math.cos_f32(math.PI / 6.0);
   side := 2 * radius * math.sin_f32(math.PI / 6.0);
 
-  c : rl.Color = { 255, 255, 255, 120 };
+  { // Tiles
+    i : int = 0;
+    for y in 0..<5 {
+      is_offset := y % 2 == 1;
+      row_length := 5 - math.abs(y - 2);
 
-  i : int = 0;
-  for y in 0..<5 {
-    is_offset := y % 2 == 1;
-    row_length := 5 - math.abs(y - 2);
+      even_offset :f32= 0.5 if is_offset else 0;
 
-    even_offset :f32= 0.5 if is_offset else 0;
-
-    for x in -(row_length - 1) / 2..=row_length / 2 {
-      defer i += 1;
+      for x in -(row_length - 1) / 2..=row_length / 2 {
+        defer i += 1;
 
 
-      tex := TileSprites[u8(game.tiles[i].type)];
-      scale := w / f32(tex.width);
+        tex := TileSprites[game.tiles[i].type];
+        scale := w / f32(tex.width);
 
-      poly_center := screen_center;
-      poly_center[0] += (f32(x) - even_offset) * w;
-      poly_center[0] -= w / 2.0;
+        poly_center := get_hex_pos(x, y, w, h, side, even_offset, screen_center);
+        poly_center[0] -= w / 2.0;
+        poly_center[1] -= h / 2.0;
 
-      poly_center[1] += (f32(y) - 2) * (h + side) / 2;
-      poly_center[1] -= h / 2.0;
-
-      rl.DrawTextureEx(tex, poly_center, 0, scale, rl.WHITE);
-      
-
+        rl.DrawTextureEx(tex, poly_center, 0, scale, rl.WHITE);
+      }
     }
   }
+
+  // { // Settles
+  //
+  // }
 }
 main :: proc() {
 	rl.InitWindow(1280, 720, "Catan")
