@@ -5,7 +5,7 @@ import "core:math"
 import "core:math/rand"
 import rl "vendor:raylib"
 
-TileType :: enum u8 {
+TileType :: enum {
   DESERT,
   WOOD,
   STONE,
@@ -22,11 +22,36 @@ Tile :: struct {
 Game :: struct {
   tiles : [19]Tile,
 }
+gen_board :: proc(game: ^Game) {
+  max_amount_of_tile : [TileType]u8 = ---; 
+  amount_of_tile: [TileType]u8;
 
-init_game :: proc(game: ^Game) {
-  for tile_index in 0..<len(game.tiles) {
-    game.tiles[tile_index].type = rand.choice_enum(TileType);
+  max_amount_of_tile[TileType.DESERT] = 1;
+  max_amount_of_tile[TileType.WOOD]   = 4;
+  max_amount_of_tile[TileType.STONE]  = 3;
+  max_amount_of_tile[TileType.CLAY]   = 3;
+  max_amount_of_tile[TileType.WHEAT]  = 4;
+  max_amount_of_tile[TileType.SHEEP]  = 4;
+
+  desert_index := rand.choice([]int{4,5,8,9,10,13,14});
+  gen_non_desert := proc() -> TileType {
+    t := rand.int31_max(len(TileType) - 1);
+    return TileType(t + 1);
   }
+
+  for tile_index in 0..<len(game.tiles) {
+    tile : TileType = gen_non_desert() if tile_index != desert_index else .DESERT;
+    for amount_of_tile[tile] >= max_amount_of_tile[tile] {
+      tile = gen_non_desert();
+    }
+
+    game.tiles[tile_index].type = tile;
+    amount_of_tile[tile] += 1;
+  }
+}
+init_game :: proc(game: ^Game) {
+  gen_board(game);
+
   TileSprites = {
     rl.LoadTexture("resources/hexes/vector/desert.png"),
     rl.LoadTexture("resources/hexes/vector/forest.png"),
@@ -40,7 +65,9 @@ init_game :: proc(game: ^Game) {
 
 
 update_game :: proc(game: ^Game) {
-
+  if rl.IsKeyPressed(.R) {
+    gen_board(game);
+  }
 }
 
 draw_game :: proc(game: ^Game) {
@@ -55,7 +82,6 @@ draw_game :: proc(game: ^Game) {
 draw_board :: proc(game: ^Game) {
   screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)};
   radius : f32 = 80;
-  hex_scale : f32 = 0.9;
 
   h    := 2 * radius;
   w    := 2 * radius * math.cos_f32(math.PI / 6.0);
@@ -89,25 +115,6 @@ draw_board :: proc(game: ^Game) {
 
     }
   }
-  // for x in -1 ..= 1 {
-  //   col_height := 2 if x == 0 else 1;
-  //
-  //   for y in -col_height ..= col_height {
-  //     poly_center := screen_center;
-  //     poly_center[0] += f32(x) * (w + side);
-  //     poly_center[1] += f32(y) * h;
-  //     rl.DrawPoly(poly_center, 6, radius * hex_scale, 0, rl.WHITE);
-  //   }
-  // }
-  //
-  // for y in -1 ..= 2 {
-  //   for x in 0..=1 {
-  //     poly_center := screen_center;
-  //     poly_center[0] += (f32(x) - 0.5) * (w + side);
-  //     poly_center[1] += (f32(y) - 0.5) * h;
-  //     rl.DrawPoly(poly_center, 6, radius * hex_scale, 0, rl.WHITE);
-  //   }
-  // }
 }
 main :: proc() {
 	rl.InitWindow(1280, 720, "Catan")
