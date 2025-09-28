@@ -17,6 +17,7 @@ TileType :: enum {
 TileSprites : [TileType]rl.Texture;
 Tile :: struct {
   type : TileType,
+  pos: rl.Vector2,
 
 }
 Game :: struct {
@@ -50,6 +51,25 @@ gen_board :: proc(game: ^Game) {
   }
 }
 init_game :: proc(game: ^Game) {
+  {
+    i : int = 0;
+    h : f32 = 1.0;
+    w : f32 = h * math.cos_f32(math.PI / 6.0);
+    side := h * math.sin_f32(math.PI / 6.0);
+
+    for y in 0..<5 {
+      is_offset := y % 2 == 1;
+      row_length := 5 - math.abs(y - 2);
+
+      even_offset :f32= 0.5 if is_offset else 0;
+
+      for x in -(row_length - 1) / 2..=row_length / 2 {
+        defer i += 1;
+
+        game.tiles[i].pos = {(f32(x) - even_offset) * w, (f32(y) - 2) * (h + side) / 2}
+      }
+    }
+  }
   gen_board(game);
 
   TileSprites = {
@@ -86,8 +106,6 @@ get_hex_pos :: proc(
   screen_center: rl.Vector2
   ) -> rl.Vector2 {
     poly_center := screen_center;
-    poly_center[0] += (f32(x) - x_offset) * w;
-    poly_center[1] += (f32(y) - 2) * (h + side) / 2;
     return poly_center;
 }
 draw_board :: proc(game: ^Game) {
@@ -98,28 +116,13 @@ draw_board :: proc(game: ^Game) {
   w    := 2 * radius * math.cos_f32(math.PI / 6.0);
   side := 2 * radius * math.sin_f32(math.PI / 6.0);
 
-  { // Tiles
-    i : int = 0;
-    for y in 0..<5 {
-      is_offset := y % 2 == 1;
-      row_length := 5 - math.abs(y - 2);
+  for tile in game.tiles {
+      tex := TileSprites[tile.type];
+      scale := w / f32(tex.width);
 
-      even_offset :f32= 0.5 if is_offset else 0;
+      pos := rl.Vector2{tile.pos[0] * 2 * radius + screen_center[0] - w / 2.0, tile.pos[1] * 2 * radius + screen_center[1] - h / 2.0};
 
-      for x in -(row_length - 1) / 2..=row_length / 2 {
-        defer i += 1;
-
-
-        tex := TileSprites[game.tiles[i].type];
-        scale := w / f32(tex.width);
-
-        poly_center := get_hex_pos(x, y, w, h, side, even_offset, screen_center);
-        poly_center[0] -= w / 2.0;
-        poly_center[1] -= h / 2.0;
-
-        rl.DrawTextureEx(tex, poly_center, 0, scale, rl.WHITE);
-      }
-    }
+      rl.DrawTextureEx(tex, pos, 0, scale, rl.WHITE);
   }
 
   // { // Settles
