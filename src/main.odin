@@ -22,7 +22,7 @@ TileSprites : [TileType]rl.Texture;
 Tile :: struct {
   type : TileType,
   pos: rl.Vector2,
-  vertices_indices: [6]u8,
+  vertices: [6]^Vertex,
 }
 
 Vertex :: struct {
@@ -47,24 +47,25 @@ init_board :: proc(game: ^Game) {
     first_vertex_index := 0;
     for row in 0..<TILE_ROWS {
       row_length := get_row_length(row);
-      base : [6]u8 = ---;
+      base : [6]int = ---;
       defer first_tile_of_row += row_length;
       defer first_vertex_index = int(base[3]) + int(row >= TILE_ROWS / 2);
 
       tapering : int = int(row > TILE_ROWS / 2);
-      base = [6]u8{
-        auto_cast first_vertex_index, 
-        auto_cast (first_vertex_index + row_length + tapering), 
-        auto_cast (first_vertex_index + row_length + 1 + tapering),
-        auto_cast (first_vertex_index + 2 * row_length + 1 + tapering),
-        auto_cast (first_vertex_index + 2 * row_length + 2 + tapering),
-        auto_cast (first_vertex_index + 3 * row_length + 2 + tapering),
+      base = [6]int{
+        first_vertex_index, 
+        first_vertex_index + row_length + tapering,
+        first_vertex_index + row_length + 1 + tapering,
+        first_vertex_index + 2 * row_length + 1 + tapering,
+        first_vertex_index + 2 * row_length + 2 + tapering,
+        first_vertex_index + 3 * row_length + 2 + tapering,
       };
 
       for i in 0..<row_length {
         tile := &game.tiles[first_tile_of_row + i];
-        tile.vertices_indices = base;
-        for &vertex in tile.vertices_indices do vertex += auto_cast i;
+        for vertex_index, index in base {
+          tile.vertices[index] = &game.vertices[vertex_index + i];
+        }
       }
     }
   }
@@ -91,15 +92,15 @@ init_board :: proc(game: ^Game) {
         // 3    4
         //  \  /
         //   5
-        vertices := game.tiles[i].vertices_indices;
+        vertices := game.tiles[i].vertices;
         
-        game.vertices[vertices[0]].pos = { pos[0], pos[1] - r};
-        game.vertices[vertices[5]].pos = { pos[0], pos[1] + r};
+        vertices[0].pos = { pos[0], pos[1] - r};
+        vertices[5].pos = { pos[0], pos[1] + r};
 
-        game.vertices[vertices[1]].pos = { pos[0] - r * cos30, pos[1] - r * sin30};
-        game.vertices[vertices[2]].pos = { pos[0] + r * cos30, pos[1] - r * sin30};
-        game.vertices[vertices[3]].pos = { pos[0] - r * cos30, pos[1] + r * sin30};
-        game.vertices[vertices[4]].pos = { pos[0] + r * cos30, pos[1] + r * sin30};
+        vertices[1].pos = { pos[0] - r * cos30, pos[1] - r * sin30};
+        vertices[2].pos = { pos[0] + r * cos30, pos[1] - r * sin30};
+        vertices[3].pos = { pos[0] - r * cos30, pos[1] + r * sin30};
+        vertices[4].pos = { pos[0] + r * cos30, pos[1] + r * sin30};
       }
     }
   }
