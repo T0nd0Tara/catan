@@ -29,9 +29,14 @@ Vertex :: struct {
 	pos: rl.Vector2,
 }
 
+Edge :: struct {
+	vertices: [2]^Vertex,
+}
+
 Game :: struct {
 	tiles:    [19]Tile,
 	vertices: [54]Vertex,
+	edges:    [50]Edge,
 }
 init_board :: proc(game: ^Game) {
 	cos30 := math.cos_f32(math.PI / 6.0)
@@ -41,6 +46,9 @@ init_board :: proc(game: ^Game) {
 	w: f32 = h * cos30
 	r := h / 2.0
 	side := h * sin30
+	for &edge in game.edges {
+		edge.vertices = {nil, nil}
+	}
 	{
 
 		first_tile_of_row := 0
@@ -215,6 +223,13 @@ draw_board :: proc(game: ^Game) {
 		pos[1] -= h / 2.0
 
 		rl.DrawTextureEx(tex, pos, 0, scale, rl.WHITE)
+	}
+	for edge, index in game.edges {
+		if edge.vertices[0] == nil || edge.vertices[1] == nil do continue
+
+		p0 := pos_to_screen(edge.vertices[0].pos, radius, &screen_center)
+		p1 := pos_to_screen(edge.vertices[1].pos, radius, &screen_center)
+		rl.DrawLineEx(p0, p1, 5, rl.RED)
 	}
 
 	// vertices
