@@ -36,7 +36,7 @@ Edge :: struct {
 Game :: struct {
 	tiles:    [19]Tile,
 	vertices: [54]Vertex,
-	edges:    [50]Edge,
+	edges:    [72]Edge,
 }
 init_board :: proc(game: ^Game) {
 	cos30 := math.cos_f32(math.PI / 6.0)
@@ -46,18 +46,17 @@ init_board :: proc(game: ^Game) {
 	w: f32 = h * cos30
 	r := h / 2.0
 	side := h * sin30
-	for &edge in game.edges {
-		edge.vertices = {nil, nil}
-	}
 	{
-
+		edge_index := 0
 		first_tile_of_row := 0
 		first_vertex_index := 0
 		for row in 0 ..< TILE_ROWS {
 			row_length := get_row_length(row)
 			base: [6]int = ---
+			will_taper := row >= TILE_ROWS / 2
+			last_row := row == TILE_ROWS - 1
 			defer first_tile_of_row += row_length
-			defer first_vertex_index = int(base[3]) + int(row >= TILE_ROWS / 2)
+			defer first_vertex_index = int(base[3]) + int(will_taper)
 
 			tapering: int = int(row > TILE_ROWS / 2)
 			base = [6]int {
@@ -69,12 +68,75 @@ init_board :: proc(game: ^Game) {
 				first_vertex_index + 3 * row_length + 2 + tapering,
 			}
 
+			// edges
+			for i in 0 ..< row_length {
+				game.edges[edge_index].vertices = {
+					&game.vertices[base[0] + i],
+					&game.vertices[base[1] + i],
+				}
+				edge_index += 1
+
+				game.edges[edge_index].vertices = {
+					&game.vertices[base[0] + i],
+					&game.vertices[base[2] + i],
+				}
+				edge_index += 1
+
+				if last_row {
+					game.edges[edge_index].vertices = {
+						&game.vertices[base[3] + i],
+						&game.vertices[base[5] + i],
+					}
+					edge_index += 1
+
+					game.edges[edge_index].vertices = {
+						&game.vertices[base[4] + i],
+						&game.vertices[base[5] + i],
+					}
+					edge_index += 1
+				}
+			}
+
+			for i in 0 ..= row_length {
+				game.edges[edge_index].vertices = {
+					&game.vertices[base[1] + i],
+					&game.vertices[base[3] + i],
+				}
+				edge_index += 1
+			}
+
+			if will_taper && !last_row {
+				game.edges[edge_index].vertices = {
+					&game.vertices[base[3]],
+					&game.vertices[base[5]],
+				}
+				edge_index += 1
+
+				game.edges[edge_index].vertices = {
+					&game.vertices[base[4] + row_length - 1],
+					&game.vertices[base[5] + row_length - 1],
+				}
+				edge_index += 1
+			}
+
+
+			// tiles
 			for i in 0 ..< row_length {
 				tile := &game.tiles[first_tile_of_row + i]
 				for vertex_index, index in base {
 					tile.vertices[index] = &game.vertices[vertex_index + i]
 				}
 			}
+		}
+	}
+
+	for edge1, edge1_ind in game.edges {
+		for edge2 in game.edges[edge1_ind + 1:] {
+			same_edge :=
+				(edge1.vertices[0] == edge2.vertices[0] &&
+					edge1.vertices[1] == edge2.vertices[1]) ||
+				(edge1.vertices[0] == edge2.vertices[1] && edge1.vertices[1] == edge2.vertices[0])
+			assert(!same_edge)
 		}
 	}
 
@@ -225,8 +287,6 @@ draw_board :: proc(game: ^Game) {
 		rl.DrawTextureEx(tex, pos, 0, scale, rl.WHITE)
 	}
 	for edge, index in game.edges {
-		if edge.vertices[0] == nil || edge.vertices[1] == nil do continue
-
 		p0 := pos_to_screen(edge.vertices[0].pos, radius, &screen_center)
 		p1 := pos_to_screen(edge.vertices[1].pos, radius, &screen_center)
 		rl.DrawLineEx(p0, p1, 5, rl.RED)
