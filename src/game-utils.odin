@@ -31,4 +31,5 @@ draw_game :: proc(game: ^Game) {
 	rl.ClearBackground(rl.BLACK)
 
 	draw_board(game)
+	draw_dice(game)
 }
