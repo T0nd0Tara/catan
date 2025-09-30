@@ -1,4 +1,5 @@
 package main
+import "core:fmt"
 import "core:math"
 import "core:math/rand"
 import rl "vendor:raylib"
@@ -30,6 +31,8 @@ gen_board :: proc(game: ^Game) {
 		game.tiles[tile_index].type = tile
 		amount_of_tile[tile] += 1
 	}
+
+	init_board_numbers(game)
 }
 draw_board :: proc(game: ^Game) {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
@@ -56,7 +59,7 @@ draw_board :: proc(game: ^Game) {
 			auto_cast pos[0],
 			auto_cast pos[1],
 			50,
-			rl.RED,
+			rl.BLACK,
 		)
 	}
 	for edge, index in game.edges {
@@ -211,29 +214,43 @@ init_board :: proc(game: ^Game) {
 		}
 	}
 
-	init_board_numbers(game)
 }
 init_board_numbers :: proc(game: ^Game) {
 	for &tile in game.tiles do tile.number = -1
-	board_numbers := [?]i8{5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11}
-	get_spiral_indices :: proc(row, col: int) -> (out: [dynamic]i8) {
+	fill_spiral :: proc(game: ^Game, row, col: int, board_numbers_index: int = 0) {
+		board_numbers := [?]i8{5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11}
 
-		// for col_it in col ..< get_row_length(row) - col {
-		// 	game.tiles[get_tile_index(row, col_it)].number = board_numbers[board_numbers_index]
-		// 	board_numbers_index += 1
-		// }
-		//
-		// for row_it in row + 1 ..< TILE_ROWS - row - 1 {
-		// 	game.tiles[get_tile_index(row_it, get_row_length(row_it) - col - 1)].number =
-		// 		board_numbers[board_numbers_index]
-		// 	board_numbers_index += 1
-		// }
-		//
-		// for col_it in row + 1 ..< get_row_length(row) - col {
-		// 	game.tiles[get_tile_index(row_it, get_row_length(row_it) - col - 1)].number =
-		// 		board_numbers[board_numbers_index]
-		// 	board_numbers_index += 1
-		// }
+		board_numbers_index := board_numbers_index
+		spiral_indexes := [dynamic]int{}
+		defer delete(spiral_indexes)
+
+		for col_it in col ..< get_row_length(row) - col {
+			append(&spiral_indexes, get_tile_index(row, col_it))
+		}
+
+		last_row_of_spiral := TILE_ROWS - row - 1
+
+		for row_it in row + 1 ..= last_row_of_spiral {
+			append(&spiral_indexes, get_tile_index(row_it, get_row_length(row_it) - col - 1))
+		}
+
+		for col_it := get_row_length(last_row_of_spiral) - col - 2; col_it > col; col_it -= 1 {
+			append(&spiral_indexes, get_tile_index(last_row_of_spiral, col_it))
+		}
+
+		for row_it := last_row_of_spiral; row_it > row; row_it -= 1 {
+			append(&spiral_indexes, get_tile_index(row_it, col))
+		}
+		fmt.println("spiral_indexes", spiral_indexes)
+
+		for i in spiral_indexes {
+			tile := &game.tiles[i]
+			if tile.type == .DESERT do tile.number = 7
+			else {
+				tile.number = board_numbers[board_numbers_index]
+				board_numbers_index += 1
+			}
+		}
 
 		if (row < TILE_ROWS / 2) do fill_spiral(game, row + 1, col + 1, board_numbers_index)
 	}
