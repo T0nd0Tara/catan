@@ -216,11 +216,11 @@ init_board :: proc(game: ^Game) {
 
 }
 init_board_numbers :: proc(game: ^Game) {
-	for &tile in game.tiles do tile.number = -1
 	fill_spiral :: proc(game: ^Game, row, col: int, board_numbers_index: int = 0) {
-		board_numbers := [?]i8{5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11}
 
+		board_numbers := [?]i8{5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11}
 		board_numbers_index := board_numbers_index
+
 		spiral_indexes := [dynamic]int{}
 		defer delete(spiral_indexes)
 
