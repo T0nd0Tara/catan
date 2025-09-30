@@ -16,7 +16,7 @@ Tile :: struct {
 	type:     TileType,
 	pos:      rl.Vector2,
 	vertices: [6]^Vertex,
-	number:   i8, // 7 if type == .DESERT
+	number:   u8, // 7 if type == .DESERT
 }
 
 Vertex :: struct {

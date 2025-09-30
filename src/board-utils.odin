@@ -61,6 +61,9 @@ draw_board :: proc(game: ^Game) {
 			50,
 			rl.BLACK,
 		)
+		if tile.number == game.dice[0] + game.dice[1] {
+			rl.DrawCircleLinesV(pos, 50, rl.BLACK)
+		}
 	}
 	for edge, index in game.edges {
 		p0 := pos_to_screen(edge.vertices[0].pos, radius, &screen_center)
@@ -218,7 +221,7 @@ init_board :: proc(game: ^Game) {
 init_board_numbers :: proc(game: ^Game) {
 	fill_spiral :: proc(game: ^Game, row, col: int, board_numbers_index: int = 0) {
 
-		board_numbers := [?]i8{5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11}
+		board_numbers := [?]u8{5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11}
 		board_numbers_index := board_numbers_index
 
 		spiral_indexes := [dynamic]int{}
