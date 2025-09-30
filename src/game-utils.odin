@@ -22,6 +22,9 @@ update_game :: proc(game: ^Game) {
 	if rl.IsKeyPressed(.R) {
 		gen_board(game)
 	}
+	if rl.IsKeyPressed(.SPACE) {
+		roll_dice(game)
+	}
 }
 
 draw_game :: proc(game: ^Game) {

@@ -31,4 +31,5 @@ Game :: struct {
 	tiles:    [19]Tile,
 	vertices: [54]Vertex,
 	edges:    [72]Edge,
+	dice:     [2]u8,
 }
