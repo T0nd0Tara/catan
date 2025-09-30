@@ -241,7 +241,6 @@ init_board_numbers :: proc(game: ^Game) {
 		for row_it := last_row_of_spiral; row_it > row; row_it -= 1 {
 			append(&spiral_indexes, get_tile_index(row_it, col))
 		}
-		fmt.println("spiral_indexes", spiral_indexes)
 
 		for i in spiral_indexes {
 			tile := &game.tiles[i]
