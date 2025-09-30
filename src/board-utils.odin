@@ -48,10 +48,16 @@ draw_board :: proc(game: ^Game) {
 		tex := TileSprites[tile.type]
 		scale := w / f32(tex.width)
 		pos := pos_to_screen(tile.pos, radius, &screen_center)
-		pos[0] -= w / 2.0
-		pos[1] -= h / 2.0
+		tex_pos := rl.Vector2{pos[0] - w / 2.0, pos[1] - h / 2.0}
 
-		rl.DrawTextureEx(tex, pos, 0, scale, rl.WHITE)
+		rl.DrawTextureEx(tex, tex_pos, 0, scale, rl.WHITE)
+		rl.DrawText(
+			rl.TextFormat("%d", tile.number),
+			auto_cast pos[0],
+			auto_cast pos[1],
+			50,
+			rl.RED,
+		)
 	}
 	for edge, index in game.edges {
 		p0 := pos_to_screen(edge.vertices[0].pos, radius, &screen_center)
@@ -204,7 +210,38 @@ init_board :: proc(game: ^Game) {
 			}
 		}
 	}
+
+	init_board_numbers(game)
 }
+init_board_numbers :: proc(game: ^Game) {
+	for &tile in game.tiles do tile.number = -1
+	board_numbers := [?]i8{5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11}
+	get_spiral_indices :: proc(row, col: int) -> (out: [dynamic]i8) {
+
+		// for col_it in col ..< get_row_length(row) - col {
+		// 	game.tiles[get_tile_index(row, col_it)].number = board_numbers[board_numbers_index]
+		// 	board_numbers_index += 1
+		// }
+		//
+		// for row_it in row + 1 ..< TILE_ROWS - row - 1 {
+		// 	game.tiles[get_tile_index(row_it, get_row_length(row_it) - col - 1)].number =
+		// 		board_numbers[board_numbers_index]
+		// 	board_numbers_index += 1
+		// }
+		//
+		// for col_it in row + 1 ..< get_row_length(row) - col {
+		// 	game.tiles[get_tile_index(row_it, get_row_length(row_it) - col - 1)].number =
+		// 		board_numbers[board_numbers_index]
+		// 	board_numbers_index += 1
+		// }
+
+		if (row < TILE_ROWS / 2) do fill_spiral(game, row + 1, col + 1, board_numbers_index)
+	}
+
+
+	fill_spiral(game, 0, 0)
+}
+
 get_row_of_tile :: proc(tile_index: int) -> int {
 	past_tiles := -1
 	for row_ind in 0 ..< TILE_ROWS {
@@ -217,6 +254,16 @@ get_row_of_tile :: proc(tile_index: int) -> int {
 get_row_length :: proc(row_index: int) -> int {
 	return TILE_ROWS - math.abs(row_index - TILE_ROWS / 2)
 }
+
+get_tile_index :: proc(row, tile_index_in_row: int) -> int {
+	prev_tiles := 0
+	for row_it in 0 ..< row {
+		prev_tiles += get_row_length(row_it)
+	}
+
+	return prev_tiles + tile_index_in_row
+}
+
 tile_has_right :: proc(tile_index: int) -> bool {
 	past_tiles := -1
 	for row_ind in 0 ..< TILE_ROWS {
