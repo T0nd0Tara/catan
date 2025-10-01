@@ -1,6 +1,8 @@
 package main
 import rl "vendor:raylib"
+
 TileSprites: [TileType]rl.Texture
+CardSprites: [ResourceType]rl.Texture
 
 init_game :: proc(game: ^Game) {
 	init_board(game)
@@ -15,6 +17,13 @@ init_game :: proc(game: ^Game) {
 		.SHEEP  = rl.LoadTexture("resources/hexes/vector/pasture.png"),
 	}
 
+	CardSprites = {
+		.WOOD  = rl.LoadTexture("resources/resources/vector/lumber.png"),
+		.STONE = rl.LoadTexture("resources/resources/vector/ore.png"),
+		.CLAY  = rl.LoadTexture("resources/resources/vector/brick.png"),
+		.WHEAT = rl.LoadTexture("resources/resources/vector/grain.png"),
+		.SHEEP = rl.LoadTexture("resources/resources/vector/wool.png"),
+	}
 }
 
 

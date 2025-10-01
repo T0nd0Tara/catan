@@ -3,14 +3,23 @@ import rl "vendor:raylib"
 
 TILE_ROWS :: 5
 
-TileType :: enum {
-	DESERT,
+ResourceType :: enum {
 	WOOD,
 	STONE,
 	CLAY,
 	WHEAT,
 	SHEEP,
 }
+
+TileType :: enum {
+	WOOD = auto_cast ResourceType.WOOD,
+	STONE = auto_cast ResourceType.STONE,
+	CLAY = auto_cast ResourceType.CLAY,
+	WHEAT = auto_cast ResourceType.WHEAT,
+	SHEEP = auto_cast ResourceType.SHEEP,
+	DESERT,
+}
+
 
 Tile :: struct {
 	type:     TileType,
