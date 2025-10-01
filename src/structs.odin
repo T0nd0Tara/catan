@@ -4,20 +4,20 @@ import rl "vendor:raylib"
 TILE_ROWS :: 5
 
 ResourceType :: enum {
+	WOOD = auto_cast TileType.WOOD,
+	STONE = auto_cast TileType.STONE,
+	CLAY = auto_cast TileType.CLAY,
+	WHEAT = auto_cast TileType.WHEAT,
+	SHEEP = auto_cast TileType.SHEEP,
+}
+
+TileType :: enum {
+	DESERT,
 	WOOD,
 	STONE,
 	CLAY,
 	WHEAT,
 	SHEEP,
-}
-
-TileType :: enum {
-	WOOD = auto_cast ResourceType.WOOD,
-	STONE = auto_cast ResourceType.STONE,
-	CLAY = auto_cast ResourceType.CLAY,
-	WHEAT = auto_cast ResourceType.WHEAT,
-	SHEEP = auto_cast ResourceType.SHEEP,
-	DESERT,
 }
 
 
