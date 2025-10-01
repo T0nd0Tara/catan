@@ -44,4 +44,5 @@ draw_game :: proc(game: ^Game) {
 
 	draw_board(game)
 	draw_dice(game)
+	draw_cards(game)
 }
