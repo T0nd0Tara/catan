@@ -1,3 +1,4 @@
+#+feature dynamic-literals
 package main
 import rl "vendor:raylib"
 
@@ -24,6 +25,19 @@ init_game :: proc(game: ^Game) {
 		.WHEAT = rl.LoadTexture("resources/resources/vector/grain.png"),
 		.SHEEP = rl.LoadTexture("resources/resources/vector/wool.png"),
 	}
+
+  for &player in game.players {
+    player.cards = { .WOOD, .WOOD, .WHEAT };
+  }
+}
+
+delete_game :: proc(game: ^Game) {
+  for tex in TileSprites do rl.UnloadTexture(tex);
+  for tex in CardSprites do rl.UnloadTexture(tex);
+
+  for &player in game.players {
+    delete(player.cards)
+  }
 }
 
 

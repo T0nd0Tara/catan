@@ -8,6 +8,7 @@ main :: proc() {
 	defer rl.CloseWindow()
 	game: Game = ---
 	init_game(&game)
+  defer delete_game(&game)
 
 	rl.SetTargetFPS(60)
 

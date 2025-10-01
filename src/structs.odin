@@ -36,9 +36,15 @@ Edge :: struct {
 	vertices: [2]^Vertex,
 }
 
+Player :: struct {
+  cards: [dynamic]ResourceType,
+}
+
 Game :: struct {
 	tiles:    [19]Tile,
 	vertices: [54]Vertex,
 	edges:    [72]Edge,
 	dice:     [2]u8,
+
+  players: [1]Player,
 }

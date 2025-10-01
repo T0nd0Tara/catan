@@ -7,8 +7,10 @@ draw_cards :: proc(game: ^Game) {
   scale : f32 = 0.3
 
 
-  for tex, i in CardSprites {
-    pos := rl.Vector2{ screen_center[0] - (f32(tex.width) * scale * f32(int(i) - int(len(CardSprites)) / 2)), 100}
+  cards := game.players[0].cards
+  for card, i in  cards{
+    tex := CardSprites[card]
+    pos := rl.Vector2{ screen_center[0] + (f32(tex.width) * scale * f32(int(i) - len(cards) / 2)), 100}
     rl.DrawTextureEx(tex, pos, 0, scale, rl.WHITE);
   }
 }
