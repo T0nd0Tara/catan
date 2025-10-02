@@ -4,17 +4,8 @@ import rl "vendor:raylib"
 
 cards_animation :=  [dynamic]f32{};
 
-draw_cards :: proc(game: ^Game) {
-	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
-  base_scale : f32 = 0.3
-  selected_scale : f32 = 0.6
-  selected_animation_duaration : f32 = 1.0 // in seconds
+update_card_animation_array :: proc(cards: ^[dynamic]ResourceType) {
 
-  dt := rl.GetFrameTime()
-
-
-  cards := game.players[0].cards
-  
   if len(cards) != len(cards_animation) {
     temp_cards_animation := make([dynamic]f32, len(cards), cap(cards))
 
@@ -29,6 +20,20 @@ draw_cards :: proc(game: ^Game) {
     delete(cards_animation)
     cards_animation = temp_cards_animation
   }
+}
+draw_cards :: proc(game: ^Game) {
+	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
+  base_scale : f32 = 0.3
+  selected_scale : f32 = 0.6
+  selected_animation_duaration : f32 = 1.0 // in seconds
+
+  dt := rl.GetFrameTime()
+
+
+  cards := game.players[0].cards
+
+  update_card_animation_array(&cards)
+  
 
   for card, i in cards {
     t := (cards_animation[i] + dt) / selected_animation_duaration
