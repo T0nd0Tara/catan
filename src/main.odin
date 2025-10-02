@@ -4,6 +4,7 @@ import rl "vendor:raylib"
 
 
 main :: proc() {
+  rl.SetConfigFlags({rl.ConfigFlag.MSAA_4X_HINT, rl.ConfigFlag.VSYNC_HINT})
 	rl.InitWindow(1280, 720, "Catan")
 	defer rl.CloseWindow()
 	game: Game = ---
