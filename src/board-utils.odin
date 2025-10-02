@@ -36,8 +36,9 @@ gen_board :: proc(game: ^Game) {
 }
 draw_board :: proc(game: ^Game) {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
-	radius: f32 = 80
-	h := 2 * radius
+	radius: f32 : 80
+  padding : f32 : 0.05
+  h := 2 * radius
 	w := 2 * radius * math.cos_f32(math.PI / 6.0)
 
 	pos_to_screen := proc(pos: rl.Vector2, radius: f32, screen_center: ^rl.Vector2) -> rl.Vector2 {
@@ -49,7 +50,7 @@ draw_board :: proc(game: ^Game) {
 
 	for tile in game.tiles {
 		tex := TileSprites[tile.type]
-		scale := w / f32(tex.width)
+		scale := (1.0 - padding) * w / f32(tex.width) / math.cos_f32(math.PI / 6.0)
 		pos := pos_to_screen(tile.pos, radius, &screen_center)
 		tex_pos := rl.Vector2{pos[0] - w / 2.0, pos[1] - h / 2.0}
 

@@ -1,6 +1,8 @@
 #+feature dynamic-literals
 package main
 import rl "vendor:raylib"
+import "core:strings"
+import "core:fmt"
 
 TileSprites: [TileType]rl.Texture
 CardSprites: [ResourceType]rl.Texture
@@ -9,14 +11,11 @@ init_game :: proc(game: ^Game) {
 	init_board(game)
 	gen_board(game)
 
-	TileSprites = {
-		.DESERT = rl.LoadTexture("resources/hexes/vector/desert.png"),
-		.WOOD   = rl.LoadTexture("resources/hexes/vector/forest.png"),
-		.STONE  = rl.LoadTexture("resources/hexes/vector/mountain.png"),
-		.CLAY   = rl.LoadTexture("resources/hexes/vector/hill.png"),
-		.WHEAT  = rl.LoadTexture("resources/hexes/vector/field.png"),
-		.SHEEP  = rl.LoadTexture("resources/hexes/vector/pasture.png"),
-	}
+  for type in TileType {
+    type_name := fmt.aprintf("%v", type)
+    TileSprites[type] = rl.LoadTexture(rl.TextFormat("resources/hexes/%s.png", 
+        strings.to_lower(type_name)))
+  }
 
 	CardSprites = {
 		.WOOD  = rl.LoadTexture("resources/resources/vector/lumber.png"),
