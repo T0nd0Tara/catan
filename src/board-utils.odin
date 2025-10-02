@@ -56,9 +56,10 @@ draw_board :: proc(game: ^Game) {
 
 		rl.DrawTextureEx(tex, tex_pos, 0, scale, rl.WHITE)
 
-    rl.DrawCircleV(pos, radius / 2.5, rl.WHITE)
+    if tile.type == .DESERT do continue
 
-    text_size :: 50
+    rl.DrawCircleV(pos, radius / 3.5, rl.WHITE)
+    text_size :: 30
     text_spacing :: 0
 		text := rl.TextFormat("%d", tile.number)
     font := MainFont
