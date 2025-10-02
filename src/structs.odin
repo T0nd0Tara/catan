@@ -4,9 +4,9 @@ import rl "vendor:raylib"
 TILE_ROWS :: 5
 
 ResourceType :: enum {
-	WOOD = auto_cast TileType.WOOD,
+	WOOD  = auto_cast TileType.WOOD,
 	STONE = auto_cast TileType.STONE,
-	CLAY = auto_cast TileType.CLAY,
+	CLAY  = auto_cast TileType.CLAY,
 	WHEAT = auto_cast TileType.WHEAT,
 	SHEEP = auto_cast TileType.SHEEP,
 }
@@ -37,7 +37,7 @@ Edge :: struct {
 }
 
 Player :: struct {
-  cards: [dynamic]ResourceType,
+	cards: [dynamic]ResourceType,
 }
 
 Game :: struct {
@@ -45,6 +45,5 @@ Game :: struct {
 	vertices: [54]Vertex,
 	edges:    [72]Edge,
 	dice:     [2]u8,
-
-  players: [1]Player,
+	players:  [1]Player,
 }

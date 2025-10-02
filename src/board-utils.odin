@@ -65,19 +65,19 @@ draw_board :: proc(game: ^Game) {
 			rl.DrawCircleLinesV(pos, 50, rl.BLACK)
 		}
 	}
-	for edge, index in game.edges {
-		p0 := pos_to_screen(edge.vertices[0].pos, radius, &screen_center)
-		p1 := pos_to_screen(edge.vertices[1].pos, radius, &screen_center)
-		rl.DrawLineEx(p0, p1, 5, rl.RED)
-	}
+	// for edge, index in game.edges {
+	// 	p0 := pos_to_screen(edge.vertices[0].pos, radius, &screen_center)
+	// 	p1 := pos_to_screen(edge.vertices[1].pos, radius, &screen_center)
+	// 	rl.DrawLineEx(p0, p1, 5, rl.RED)
+	// }
 
 	// vertices
-	for vertex, index in game.vertices {
-		pos := pos_to_screen(vertex.pos, radius, &screen_center)
-		rl.DrawCircle(auto_cast pos[0], auto_cast pos[1], 10, rl.WHITE)
-		rl.DrawText(rl.TextFormat("%i", index), auto_cast pos[0], auto_cast pos[1], 5, rl.RED)
-
-	}
+	// for vertex, index in game.vertices {
+	// 	pos := pos_to_screen(vertex.pos, radius, &screen_center)
+	// 	rl.DrawCircle(auto_cast pos[0], auto_cast pos[1], 10, rl.WHITE)
+	// 	rl.DrawText(rl.TextFormat("%i", index), auto_cast pos[0], auto_cast pos[1], 5, rl.RED)
+	//
+	// }
 }
 
 init_board :: proc(game: ^Game) {
