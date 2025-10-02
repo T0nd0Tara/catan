@@ -10,7 +10,7 @@ main :: proc() {
 	init_game(&game)
   defer delete_game(&game)
 
-	rl.SetTargetFPS(60)
+	rl.SetTargetFPS(120)
 
 	for !rl.WindowShouldClose() {
 		update_game(&game)

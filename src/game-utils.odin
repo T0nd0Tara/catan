@@ -59,4 +59,9 @@ draw_game :: proc(game: ^Game) {
 	draw_board(game)
 	draw_dice(game)
 	draw_cards(game)
+
+  dt := rl.GetFrameTime()
+  fps := 1.0 / dt
+  rl.DrawText(rl.TextFormat("dt: %f", dt), 0, 0, 20, rl.WHITE);
+  rl.DrawText(rl.TextFormat("fps: %f", fps), 0, 30, 20, rl.WHITE);
 }
