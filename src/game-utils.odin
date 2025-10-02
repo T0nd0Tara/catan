@@ -7,6 +7,8 @@ import "core:fmt"
 TileSprites: [TileType]rl.Texture
 CardSprites: [ResourceType]rl.Texture
 
+MainFont : rl.Font
+
 init_game :: proc(game: ^Game) {
 	init_board(game)
 	gen_board(game)
@@ -25,6 +27,8 @@ init_game :: proc(game: ^Game) {
 		.SHEEP = rl.LoadTexture("resources/resources/vector/wool.png"),
 	}
 
+  MainFont = rl.LoadFontEx("resources/fonts/Beaver Punch.otf", 256, nil, 0)
+
   for &player in game.players {
     player.cards = { .WOOD, .WOOD, .WHEAT };
   }
@@ -33,6 +37,8 @@ init_game :: proc(game: ^Game) {
 delete_game :: proc(game: ^Game) {
   for tex in TileSprites do rl.UnloadTexture(tex);
   for tex in CardSprites do rl.UnloadTexture(tex);
+
+  rl.UnloadFont(MainFont)
 
   for &player in game.players {
     delete(player.cards)

@@ -50,18 +50,28 @@ draw_board :: proc(game: ^Game) {
 
 	for tile in game.tiles {
 		tex := TileSprites[tile.type]
-		scale := (1.0 - padding) * w / f32(tex.width) / math.cos_f32(math.PI / 6.0)
+		scale := (1.0 - padding) * w / f32(tex.width)
 		pos := pos_to_screen(tile.pos, radius, &screen_center)
 		tex_pos := rl.Vector2{pos[0] - w / 2.0, pos[1] - h / 2.0}
 
 		rl.DrawTextureEx(tex, tex_pos, 0, scale, rl.WHITE)
-		rl.DrawText(
-			rl.TextFormat("%d", tile.number),
-			auto_cast pos[0],
-			auto_cast pos[1],
-			50,
+
+    rl.DrawCircleV(pos, radius / 2.5, rl.WHITE)
+
+    text_size :: 50
+    text_spacing :: 0
+		text := rl.TextFormat("%d", tile.number)
+    font := MainFont
+    text_measure := rl.MeasureTextEx(font, text, text_size, text_spacing)
+		rl.DrawTextEx(
+      font,
+      text,
+			rl.Vector2{ pos[0] - text_measure[0] / 2, pos[1] - text_measure[1] / 2},
+			text_size,
+			text_spacing,
 			rl.BLACK,
 		)
+
 		if tile.number == game.dice[0] + game.dice[1] {
 			rl.DrawCircleLinesV(pos, 50, rl.BLACK)
 		}
