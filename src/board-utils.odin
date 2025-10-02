@@ -36,7 +36,7 @@ gen_board :: proc(game: ^Game) {
 }
 draw_board :: proc(game: ^Game) {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
-	radius: f32 : 80
+	radius: f32 = f32(min(rl.GetScreenWidth(), rl.GetScreenHeight())) / 10
   padding : f32 : 0.05
   h := 2 * radius
 	w := 2 * radius * math.cos_f32(math.PI / 6.0)
@@ -59,13 +59,13 @@ draw_board :: proc(game: ^Game) {
     if tile.type == .DESERT do continue
 
     rl.DrawCircleV(pos, radius / 3.5, rl.WHITE)
-    text_size :: 30
     text_spacing :: 0
+    text_size := radius / 3
 		text := rl.TextFormat("%d", tile.number)
-    font := MainFont
-    text_measure := rl.MeasureTextEx(font, text, text_size, text_spacing)
+    font := &MainFont
+    text_measure := rl.MeasureTextEx(font^, text, text_size, text_spacing)
 		rl.DrawTextEx(
-      font,
+      font^,
       text,
 			rl.Vector2{ pos[0] - text_measure[0] / 2, pos[1] - text_measure[1] / 2},
 			text_size,
