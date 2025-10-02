@@ -22,9 +22,9 @@ update_card_animation_array :: proc(cards: ^[dynamic]ResourceType) {
 }
 draw_cards :: proc(game: ^Game) {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
-  base_scale : f32 = 0.3
-  selected_scale : f32 = 0.4
-  selected_animation_duaration : f32 = 0.3 // in seconds
+  base_scale : f32 : 0.3
+  selected_scale : f32 : 0.4
+  selected_animation_duaration : f32 : 0.3 // in seconds
 
   dt := rl.GetFrameTime()
 
