@@ -3,6 +3,8 @@ import rl "vendor:raylib"
 
 
 cards_animation :=  [dynamic]f32{};
+viewing_animation : f32 = 0;
+viewing_animation_duaration :: 0.2;
 
 update_card_animation_array :: proc(cards: ^[dynamic]ResourceType) {
   if len(cards) == len(cards_animation) do return
@@ -41,10 +43,20 @@ draw_cards :: proc(game: ^Game) {
     scale := rl.EaseQuadOut(t, base_scale, selected_scale - base_scale, 1)
 
     tex := CardSprites[card]
+    
+    card_hidden_scale :: rl.Vector2{ 0.5, 0.3 }
+    // TODO: For some reason the cards are not centered when they're hidden and centered when shown
     pos := rl.Vector2{
-      screen_center[0] + (f32(tex.width) * base_scale * (f32(i) - f32(len(cards)) / 2)),
-      f32(rl.GetScreenHeight()) - f32(tex.height) * base_scale * 0.8
+      f32(tex.width) * base_scale * (f32(i) - f32(len(cards)) / 2) * card_hidden_scale[0],
+      f32(tex.height) * base_scale * card_hidden_scale[1]
     }
+
+    viewing_t := rl.EaseQuadOut(viewing_animation, 0, 1, viewing_animation_duaration)
+    pos[0] = rl.Lerp(pos[0], pos[0] / card_hidden_scale[0], viewing_t)
+    pos[1] = rl.Lerp(pos[1], pos[1] / card_hidden_scale[1], viewing_t)
+
+    pos[0] += screen_center[0]
+    pos[1] = f32(rl.GetScreenHeight()) - pos[1]
 
     pos[0] -= (auto_cast tex.width  * (scale - base_scale)) / 2
     pos[1] -= (auto_cast tex.height * (scale - base_scale))
@@ -64,7 +76,12 @@ draw_cards :: proc(game: ^Game) {
 
   if hovered_card != -1 {
     cards_animation[hovered_card] += 2 * dt / selected_animation_duaration
+    viewing_animation += dt
+  } else {
+    viewing_animation -= dt
   }
+
+  viewing_animation = clamp(viewing_animation, 0, viewing_animation_duaration)
 
   for i in 0..<len(cards_animation) {
     cards_animation[i] -= dt / selected_animation_duaration
