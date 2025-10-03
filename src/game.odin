@@ -7,6 +7,8 @@ import "core:fmt"
 TileSprites: [TileType]rl.Texture
 CardSprites: [ResourceType]rl.Texture
 
+BannerSprites: [enum { END, MIDDLE }]rl.Texture
+
 MainFont : rl.Font
 
 init_game :: proc(game: ^Game) {
@@ -25,6 +27,12 @@ init_game :: proc(game: ^Game) {
         strings.to_lower(type_name)))
   }
 
+  for _, type in BannerSprites {
+    type_name := fmt.aprintf("%v", type)
+    BannerSprites[type] = rl.LoadTexture(rl.TextFormat("resources/banner/banner-%s.png", 
+        strings.to_lower(type_name)))
+  }
+
   MainFont = rl.LoadFontEx("resources/fonts/Beaver Punch.otf", 256, nil, 0)
 
   for &player in game.players {
@@ -35,6 +43,7 @@ init_game :: proc(game: ^Game) {
 delete_game :: proc(game: ^Game) {
   for tex in TileSprites do rl.UnloadTexture(tex);
   for tex in CardSprites do rl.UnloadTexture(tex);
+  for tex in BannerSprites do rl.UnloadTexture(tex);
 
   rl.UnloadFont(MainFont)
 
@@ -61,6 +70,7 @@ draw_game :: proc(game: ^Game) {
 
 	draw_board(game)
 	draw_dice(game)
+	draw_store(game)
 	draw_cards(game)
 
   dt := rl.GetFrameTime()
