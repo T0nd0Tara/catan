@@ -2,21 +2,26 @@ package main
 import rl "vendor:raylib"
 
 
-cards_animation :=  [dynamic]f32{};
+CardAnimationState :: struct {
+  hovered: f32,
+}
+
+cards_animation :=  [dynamic]CardAnimationState{};
+
 viewing_animation : f32 = 0;
 viewing_animation_duaration :: 0.2;
 
-update_card_animation_array :: proc(cards: ^[dynamic]ResourceType) {
+update_card_animation_array :: proc(cards: ^[dynamic]Card) {
   if len(cards) == len(cards_animation) do return
 
-  temp_cards_animation := make([dynamic]f32, len(cards), cap(cards))
+  temp_cards_animation := make([dynamic]CardAnimationState, len(cards), cap(cards))
 
   for i in 0..<min(len(temp_cards_animation), len(cards_animation)) {
     temp_cards_animation[i] = cards_animation[i]
   }
 
   for i in len(cards_animation)..<len(temp_cards_animation) {
-    temp_cards_animation[i] = 0
+    temp_cards_animation[i] = {0}
   }
 
   delete(cards_animation)
@@ -25,8 +30,8 @@ update_card_animation_array :: proc(cards: ^[dynamic]ResourceType) {
 draw_cards :: proc(game: ^Game) {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
   base_scale : f32 : 0.3
-  selected_scale : f32 : 0.4
-  selected_animation_duaration : f32 : 0.3 // in seconds
+  hovered_scale : f32 : 0.4
+  hovered_animation_duaration : f32 : 0.3 // in seconds
 
   dt := rl.GetFrameTime()
 
@@ -38,11 +43,11 @@ draw_cards :: proc(game: ^Game) {
   hovered_card : int = -1
 
   for card, i in cards {
-    t := cards_animation[i] + dt / selected_animation_duaration
+    t := cards_animation[i].hovered + dt / hovered_animation_duaration
     //                       time, from, scale, t_max
-    scale := rl.EaseQuadOut(t, base_scale, selected_scale - base_scale, 1)
+    scale := rl.EaseQuadOut(t, base_scale, hovered_scale - base_scale, 1)
 
-    tex := CardSprites[card]
+    tex := CardSprites[card.type]
     
     card_hidden_scale :: rl.Vector2{ 0.5, 0.3 }
     // TODO: For some reason the cards are not centered when they're hidden and centered when shown
@@ -75,7 +80,7 @@ draw_cards :: proc(game: ^Game) {
   }
 
   if hovered_card != -1 {
-    cards_animation[hovered_card] += 2 * dt / selected_animation_duaration
+    cards_animation[hovered_card].hovered += 2 * dt / hovered_animation_duaration
     viewing_animation += dt
   } else {
     viewing_animation -= dt
@@ -84,9 +89,9 @@ draw_cards :: proc(game: ^Game) {
   viewing_animation = clamp(viewing_animation, 0, viewing_animation_duaration)
 
   for i in 0..<len(cards_animation) {
-    cards_animation[i] -= dt / selected_animation_duaration
+    cards_animation[i].hovered -= dt / hovered_animation_duaration
 
-    cards_animation[i] = clamp(cards_animation[i], 0, 1)
+    cards_animation[i].hovered = clamp(cards_animation[i].hovered, 0, 1)
 
   }
 }
