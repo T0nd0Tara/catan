@@ -19,13 +19,11 @@ init_game :: proc(game: ^Game) {
         strings.to_lower(type_name)))
   }
 
-	CardSprites = {
-		.WOOD  = rl.LoadTexture("resources/resources/vector/lumber.png"),
-		.STONE = rl.LoadTexture("resources/resources/vector/ore.png"),
-		.CLAY  = rl.LoadTexture("resources/resources/vector/brick.png"),
-		.WHEAT = rl.LoadTexture("resources/resources/vector/grain.png"),
-		.SHEEP = rl.LoadTexture("resources/resources/vector/wool.png"),
-	}
+  for type in ResourceType {
+    type_name := fmt.aprintf("%v", type)
+    CardSprites[type] = rl.LoadTexture(rl.TextFormat("resources/resources/%s.png", 
+        strings.to_lower(type_name)))
+  }
 
   MainFont = rl.LoadFontEx("resources/fonts/Beaver Punch.otf", 256, nil, 0)
 
