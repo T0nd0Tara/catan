@@ -63,15 +63,31 @@ draw_board :: proc(game: ^Game) {
     text_size := radius / 3
 		text := rl.TextFormat("%d", tile.number)
     font := &MainFont
+
+    chance := 6 - math.abs(i8(tile.number) - 7)
+    color := rl.RED if chance == 5 else rl.BLACK
+
     text_measure := rl.MeasureTextEx(font^, text, text_size, text_spacing)
+    text_pos := rl.Vector2{ pos[0] - text_measure[0] / 2, pos[1] - text_measure[1] / 2}
 		rl.DrawTextEx(
       font^,
       text,
-			rl.Vector2{ pos[0] - text_measure[0] / 2, pos[1] - text_measure[1] / 2},
+			text_pos,
 			text_size,
 			text_spacing,
-			rl.BLACK,
+			color,
 		)
+    dot_size := text_size / 10
+
+    for dot_ind in 0..<chance {
+      dot_pos := rl.Vector2{ pos[0] + 2 * dot_size * (f32(chance - 1) / 2.0 - f32(dot_ind)) , text_pos[1] + text_measure[1] }
+      rl.DrawCircleV(
+        dot_pos,
+        dot_size,
+        color
+      )
+    }
+
 
 		if tile.number == game.dice[0] + game.dice[1] {
 			rl.DrawCircleLinesV(pos, 50, rl.BLACK)
