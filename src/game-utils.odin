@@ -28,7 +28,7 @@ init_game :: proc(game: ^Game) {
   MainFont = rl.LoadFontEx("resources/fonts/Beaver Punch.otf", 256, nil, 0)
 
   for &player in game.players {
-    player.cards = { .WOOD, .WOOD, .WHEAT };
+    player.cards = { { .WOOD }, { .STONE }, { .WHEAT}, { .CLAY}, { .SHEEP} };
   }
 }
 
