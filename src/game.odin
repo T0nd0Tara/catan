@@ -9,6 +9,12 @@ CardSprites: [ResourceType]rl.Texture
 
 BannerSprites: [enum { END, MIDDLE }]rl.Texture
 
+VertexOption :: enum {
+  SETTELMENT = auto_cast BuyingItem.SETTELMENT,
+  CITY = auto_cast BuyingItem.CITY,
+}
+VertexSprites: #sparse[VertexOption]rl.Texture
+
 MainFont : rl.Font
 
 init_game :: proc(game: ^Game) {
@@ -33,6 +39,12 @@ init_game :: proc(game: ^Game) {
         strings.to_lower(type_name)))
   }
 
+  for type in VertexOption {
+    type_name := fmt.aprintf("%v", type)
+    VertexSprites[type] = rl.LoadTexture(rl.TextFormat("resources/pieces/%s.png", 
+        strings.to_lower(type_name)))
+  }
+
   MainFont = rl.LoadFontEx("resources/fonts/Beaver Punch.otf", 256, nil, 0)
 
   for &player in game.players {
@@ -44,6 +56,7 @@ delete_game :: proc(game: ^Game) {
   for tex in TileSprites do rl.UnloadTexture(tex);
   for tex in CardSprites do rl.UnloadTexture(tex);
   for tex in BannerSprites do rl.UnloadTexture(tex);
+  for tex in VertexSprites do rl.UnloadTexture(tex);
 
   rl.UnloadFont(MainFont)
 

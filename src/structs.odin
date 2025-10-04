@@ -20,6 +20,22 @@ TileType :: enum {
 	SHEEP,
 }
 
+VertexObject :: struct {
+	type:        enum {
+		SETTELMENT = auto_cast BuyingItem.SETTELMENT,
+		CITY       = auto_cast BuyingItem.CITY,
+    NONE,
+	},
+	playerIndex: int,
+}
+
+EdgeObject :: struct {
+	type:        enum {
+		ROAD = auto_cast BuyingItem.ROAD,
+    NONE,
+	},
+	playerIndex: int,
+}
 
 Tile :: struct {
 	type:     TileType,
@@ -30,14 +46,16 @@ Tile :: struct {
 
 Vertex :: struct {
 	pos: rl.Vector2,
+  obj: VertexObject
 }
 
 Edge :: struct {
 	vertices: [2]^Vertex,
+  obj: EdgeObject,
 }
 
 Card :: struct {
-  type: ResourceType,
+	type: ResourceType,
 }
 Player :: struct {
 	cards: [dynamic]Card,
