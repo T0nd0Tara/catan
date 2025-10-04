@@ -56,7 +56,7 @@ draw_pieces :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.
     if vertex.obj.type == .NONE do continue
 
     tex := VertexSprites[auto_cast vertex.obj.type]
-    scale := radius / f32(max(tex.width, tex.height)) / 2
+    scale := radius / f32(max(tex.width, tex.height)) / 1.5
 		pos := pos_to_screen(vertex.pos, radius, screen_center)
 
     pos[0] -= scale * f32(tex.width) / 2
@@ -271,6 +271,9 @@ init_board :: proc(game: ^Game) {
     for &vertex in game.vertices {
       vertex.obj.type = .NONE
     }
+
+    game.vertices[10].obj.type = .SETTELMENT
+    game.vertices[20].obj.type = .CITY
   }
 
 }
