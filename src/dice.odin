@@ -7,7 +7,43 @@ roll_dice :: proc(game: ^Game) {
 	random_range :: proc(from: u32, to: u32) -> u32 {
 		return (rand.uint32() % (to - from)) + from
 	}
-	game.dice = {u8(random_range(1, 6)), u8(random_range(1, 6))}
+	game.dice = {u8(random_range(1, 7)), u8(random_range(1, 7))}
+}
+
+draw_die :: proc(rect: rl.Rectangle, bg, fg: rl.Color, number: u8) {
+	rl.DrawRectangleRounded(rect, 0.3, 4, bg)
+	padding := rl.Vector2{rect.width / 5, rect.height / 5}
+
+	circles: [dynamic]rl.Vector2 = make([dynamic]rl.Vector2, 0, 6)
+	defer delete(circles)
+
+	// MM
+	if number % 2 == 1 do append(&circles, rl.Vector2{rect.width / 2, rect.height / 2})
+
+	if number != 1 {
+		// TL
+		append(&circles, padding)
+		// BR
+		append(&circles, rl.Vector2{rect.width - padding[0], rect.height - padding[1]})
+	}
+
+	if number > 3 {
+		// TR
+		append(&circles, rl.Vector2{rect.width - padding[0], padding[1]})
+		// BL
+		append(&circles, rl.Vector2{padding[0], rect.height - padding[1]})
+	}
+
+	// SIDES
+	if number == 6 {
+		append(&circles, rl.Vector2{padding[0], rect.height / 2})
+		append(&circles, rl.Vector2{rect.width - padding[0], rect.height / 2})
+	}
+
+	radius: f32 = min(rect.width, rect.height) / 10
+	for dot in circles {
+		rl.DrawCircleV(rl.Vector2{dot[0] + rect.x, dot[1] + rect.y}, radius, fg)
+	}
 }
 
 draw_dice :: proc(game: ^Game) {
@@ -22,22 +58,8 @@ draw_dice :: proc(game: ^Game) {
 		width  = size,
 		height = size,
 	}
-	rl.DrawRectangleRoundedLinesEx(rect, 0.1, 3, 5, rl.RED)
-	rl.DrawText(
-		rl.TextFormat("%d", game.dice[0]),
-		auto_cast rect.x,
-		auto_cast rect.y,
-		auto_cast rect.width,
-		rl.YELLOW,
-	)
+	draw_die(rect, rl.RED, rl.YELLOW, game.dice[0])
 
 	rect.x -= rect.width + f32(margin) / 3.0
-	rl.DrawRectangleRoundedLinesEx(rect, 0.1, 3, 5, rl.YELLOW)
-	rl.DrawText(
-		rl.TextFormat("%d", game.dice[1]),
-		auto_cast rect.x,
-		auto_cast rect.y,
-		auto_cast rect.width,
-		rl.RED,
-	)
+	draw_die(rect, rl.YELLOW, rl.RED, game.dice[1])
 }
