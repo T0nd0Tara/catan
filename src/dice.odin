@@ -14,34 +14,34 @@ draw_die :: proc(rect: rl.Rectangle, bg, fg: rl.Color, number: u8) {
 	rl.DrawRectangleRounded(rect, 0.3, 4, bg)
 	padding := rl.Vector2{rect.width / 5, rect.height / 5}
 
-	circles: [dynamic]rl.Vector2 = make([dynamic]rl.Vector2, 0, 6)
-	defer delete(circles)
+	dots: [dynamic]rl.Vector2 = make([dynamic]rl.Vector2, 0, 6)
+	defer delete(dots)
 
 	// MM
-	if number % 2 == 1 do append(&circles, rl.Vector2{rect.width / 2, rect.height / 2})
+	if number % 2 == 1 do append(&dots, rl.Vector2{rect.width / 2, rect.height / 2})
 
 	if number != 1 {
 		// TL
-		append(&circles, padding)
+		append(&dots, padding)
 		// BR
-		append(&circles, rl.Vector2{rect.width - padding[0], rect.height - padding[1]})
+		append(&dots, rl.Vector2{rect.width - padding[0], rect.height - padding[1]})
 	}
 
 	if number > 3 {
 		// TR
-		append(&circles, rl.Vector2{rect.width - padding[0], padding[1]})
+		append(&dots, rl.Vector2{rect.width - padding[0], padding[1]})
 		// BL
-		append(&circles, rl.Vector2{padding[0], rect.height - padding[1]})
+		append(&dots, rl.Vector2{padding[0], rect.height - padding[1]})
 	}
 
 	// SIDES
 	if number == 6 {
-		append(&circles, rl.Vector2{padding[0], rect.height / 2})
-		append(&circles, rl.Vector2{rect.width - padding[0], rect.height / 2})
+		append(&dots, rl.Vector2{padding[0], rect.height / 2})
+		append(&dots, rl.Vector2{rect.width - padding[0], rect.height / 2})
 	}
 
 	radius: f32 = min(rect.width, rect.height) / 10
-	for dot in circles {
+	for dot in dots {
 		rl.DrawCircleV(rl.Vector2{dot[0] + rect.x, dot[1] + rect.y}, radius, fg)
 	}
 }
