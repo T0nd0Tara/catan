@@ -3,7 +3,6 @@ package main
 import rl "vendor:raylib"
 import "core:strings"
 import "core:fmt"
-
 TileSprites: [TileType]rl.Texture
 CardSprites: [ResourceType]rl.Texture
 
@@ -14,6 +13,8 @@ VertexOption :: enum {
   CITY = auto_cast BuyingItem.CITY,
 }
 VertexSprites: #sparse[VertexOption]rl.Texture
+
+StoreSprites: [BuyingItem]^rl.Texture
 
 MainFont : rl.Font
 
@@ -50,6 +51,9 @@ init_game :: proc(game: ^Game) {
   for &player in game.players {
     player.cards = { { .WOOD }, { .STONE }, { .WHEAT}, { .CLAY}, { .SHEEP} };
   }
+
+  StoreSprites[.SETTELMENT] = &VertexSprites[.SETTELMENT]
+  StoreSprites[.CITY] = &VertexSprites[.CITY]
 }
 
 delete_game :: proc(game: ^Game) {
