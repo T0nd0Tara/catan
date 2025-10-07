@@ -1,5 +1,6 @@
 package main
 import "core:fmt"
+import "core:math"
 import rl "vendor:raylib"
 
 BuyingItem :: enum {
@@ -57,6 +58,9 @@ draw_store :: proc(game: ^Game) {
 	}
 
 	pos[0] -= animation_x
+
+	pos[0] = math.floor(pos[0])
+	pos[1] = math.floor(pos[1])
 
 	rl.DrawTextureEx(end_sprite^, pos, 0, scale, rl.WHITE)
 
