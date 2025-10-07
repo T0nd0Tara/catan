@@ -53,23 +53,23 @@ draw_pieces :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.
 	//
 	//  }
 	for vertex, index in game.vertices {
-    if vertex.obj.type == .NONE do continue
+		if vertex.obj.type == .NONE do continue
 
-    tex := VertexSprites[auto_cast vertex.obj.type]
-    scale := radius / f32(max(tex.width, tex.height)) / 1.5
+		tex := VertexSprites[auto_cast vertex.obj.type]
+		scale := radius / f32(max(tex.width, tex.height)) / 1.5
 		pos := pos_to_screen(vertex.pos, radius, screen_center)
 
-    pos[0] -= scale * f32(tex.width) / 2
-    pos[1] -= scale * f32(tex.height) / 2
+		pos[0] -= scale * f32(tex.width) / 2
+		pos[1] -= scale * f32(tex.height) / 2
 
-    rl.DrawTextureEx(tex, pos, 0, scale, rl.WHITE)
+		rl.DrawTextureEx(tex, pos, 0, scale, rl.WHITE)
 	}
 
 	// for edge, index in game.edges {
 	// 	p0 := pos_to_screen(edge.vertices[0].pos, radius, &screen_center)
 	// 	p1 := pos_to_screen(edge.vertices[1].pos, radius, &screen_center)
 	// 	rl.DrawLineEx(p0, p1, 5, rl.RED)
-	// 	rl.DrawText(rl.TextFormat("%i", index), 
+	// 	rl.DrawText(rl.TextFormat("%i", index),
 	//      auto_cast rl.Lerp(p0[0], p1[0], 0.5),
 	//      auto_cast rl.Lerp(p0[1], p1[1], 0.5),
 	//      5, rl.BLACK)
@@ -83,10 +83,10 @@ draw_pieces :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.
 	// }
 }
 pos_to_screen := proc(pos: rl.Vector2, radius: f32, screen_center: ^rl.Vector2) -> rl.Vector2 {
-  return rl.Vector2 {
-    pos[0] * 2 * radius + screen_center[0],
-    pos[1] * 2 * radius + screen_center[1],
-  }
+	return rl.Vector2 {
+		pos[0] * 2 * radius + screen_center[0],
+		pos[1] * 2 * radius + screen_center[1],
+	}
 }
 
 draw_tiles :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
@@ -267,14 +267,14 @@ init_board :: proc(game: ^Game) {
 		}
 	}
 
-  {
-    for &vertex in game.vertices {
-      vertex.obj.type = .NONE
-    }
+	{
+		for &vertex in game.vertices {
+			vertex.obj.type = .NONE
+		}
 
-    game.vertices[10].obj.type = .SETTELMENT
-    game.vertices[20].obj.type = .CITY
-  }
+		game.vertices[10].obj.type = .SETTELMENT
+		game.vertices[20].obj.type = .CITY
+	}
 
 }
 init_board_numbers :: proc(game: ^Game) {
