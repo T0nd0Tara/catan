@@ -1,6 +1,6 @@
 package main
-import rl "vendor:raylib"
 import "core:fmt"
+import rl "vendor:raylib"
 
 BuyingItem :: enum {
 	SETTELMENT,
@@ -19,7 +19,7 @@ costs: [BuyingItem][5]ResourceType = {
 store_drawer_animation: f32 = 0
 store_drawer_animation_duaration: f32 = 0.4
 
-buying_item_hover_animation : [BuyingItem]f32
+buying_item_hover_animation: [BuyingItem]f32
 buying_item_hover_animation_duaration: f32 = 0.2
 
 draw_store :: proc(game: ^Game) {
@@ -34,7 +34,7 @@ draw_store :: proc(game: ^Game) {
 	}
 
 	item_size := f32(end_sprite.height) / 2 * scale
-	item_margin : f32 = item_size / 5
+	item_margin: f32 = item_size / 5
 	animation_x := rl.EaseQuadOut(
 		store_drawer_animation,
 		0,
@@ -72,31 +72,38 @@ draw_store :: proc(game: ^Game) {
 		x: f32 = end_sprite_end_x + item_margin + (item_size + item_margin) * f32(index)
 
 		if x > f32(rl.GetScreenWidth()) do break
-    if StoreSprites[item] == nil do continue
+		if StoreSprites[item] == nil do continue
 
-    item_animation := rl.EaseQuadOut(
-      buying_item_hover_animation[item],
-      1,
-      0.3,
-      buying_item_hover_animation_duaration,
-    )
-    item_pos : rl.Vector2 = {x - item_size * (item_animation - 1) / 2, pos[1] + item_margin - item_size * (item_animation - 1) / 2}
-    current_item_size := item_size * item_animation
-    tex := StoreSprites[item]
-    defer {
-      hover_rect: rl.Rectangle = {
-        x      = item_pos[0],
-        y      = item_pos[1],
-        width  = current_item_size,
-        height = current_item_size * f32(tex.height) / f32(tex.width),
-      }
+		item_animation := rl.EaseQuadOut(
+			buying_item_hover_animation[item],
+			1,
+			0.3,
+			buying_item_hover_animation_duaration,
+		)
+		item_pos: rl.Vector2 = {
+			x - item_size * (item_animation - 1) / 2,
+			pos[1] + item_margin - item_size * (item_animation - 1) / 2,
+		}
+		current_item_size := item_size * item_animation
+		tex := StoreSprites[item]
+		defer {
+			hover_rect: rl.Rectangle = {
+				x      = item_pos[0],
+				y      = item_pos[1],
+				width  = current_item_size,
+				height = current_item_size * f32(tex.height) / f32(tex.width),
+			}
 
-      collide := int(rl.CheckCollisionPointRec(rl.GetMousePosition(), hover_rect))
+			collide := int(rl.CheckCollisionPointRec(rl.GetMousePosition(), hover_rect))
 
-      buying_item_hover_animation[item] += f32(collide * 2 - 1) * dt
+			buying_item_hover_animation[item] += f32(collide * 2 - 1) * dt
 
-      buying_item_hover_animation[item] = clamp(buying_item_hover_animation[item], 0, buying_item_hover_animation_duaration)
-    }
+			buying_item_hover_animation[item] = clamp(
+				buying_item_hover_animation[item],
+				0,
+				buying_item_hover_animation_duaration,
+			)
+		}
 
 		rl.DrawTextureEx(tex^, item_pos, 0, current_item_size / f32(tex.width), rl.WHITE)
 	}

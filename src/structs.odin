@@ -23,8 +23,8 @@ TileType :: enum {
 VertexObject :: struct {
 	type:        enum {
 		SETTELMENT = auto_cast BuyingItem.SETTELMENT,
-		CITY       = auto_cast BuyingItem.CITY,
-    NONE,
+		CITY = auto_cast BuyingItem.CITY,
+		NONE,
 	},
 	playerIndex: int,
 }
@@ -32,7 +32,7 @@ VertexObject :: struct {
 EdgeObject :: struct {
 	type:        enum {
 		ROAD = auto_cast BuyingItem.ROAD,
-    NONE,
+		NONE,
 	},
 	playerIndex: int,
 }
@@ -46,12 +46,12 @@ Tile :: struct {
 
 Vertex :: struct {
 	pos: rl.Vector2,
-  obj: VertexObject
+	obj: VertexObject,
 }
 
 Edge :: struct {
 	vertices: [2]^Vertex,
-  obj: EdgeObject,
+	obj:      EdgeObject,
 }
 
 Card :: struct {
