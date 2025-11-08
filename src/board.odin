@@ -44,6 +44,22 @@ draw_board :: proc(game: ^Game) {
 
 	draw_tiles(game, w, h, radius, padding, &screen_center)
 	draw_pieces(game, w, h, radius, padding, &screen_center)
+	draw_bought_hints(game, w, h, radius, padding, &screen_center)
+}
+
+draw_bought_hints :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+	if bought_item == nil do return
+	switch bought_item {
+	case .CARD:
+		return
+
+	case .ROAD:
+		draw_road_hints(game, w, h, radius, padding, screen_center)
+	case .CITY:
+		draw_city_hints(game, w, h, radius, padding, screen_center)
+	case .SETTELMENT:
+		draw_settelment_hints(game, w, h, radius, padding, screen_center)
+	}
 }
 
 draw_pieces :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {

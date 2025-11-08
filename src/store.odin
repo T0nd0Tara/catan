@@ -4,11 +4,13 @@ import "core:math"
 import rl "vendor:raylib"
 
 BuyingItem :: enum {
-	SETTELMENT,
+	SETTELMENT = 1,
 	CITY,
 	ROAD,
 	CARD,
 }
+
+bought_item: BuyingItem = nil
 
 costs: [BuyingItem][5]ResourceType = {
 	.ROAD       = {.WOOD, .CLAY, nil, nil, nil},
@@ -90,25 +92,28 @@ draw_store :: proc(game: ^Game) {
 		}
 		current_item_size := item_size * item_animation
 		tex := StoreSprites[item]
-		defer {
-			hover_rect: rl.Rectangle = {
-				x      = item_pos[0],
-				y      = item_pos[1],
-				width  = current_item_size,
-				height = current_item_size * f32(tex.height) / f32(tex.width),
-			}
-
-			collide := int(rl.CheckCollisionPointRec(rl.GetMousePosition(), hover_rect))
-
-			buying_item_hover_animation[item] += f32(collide * 2 - 1) * dt
-
-			buying_item_hover_animation[item] = clamp(
-				buying_item_hover_animation[item],
-				0,
-				buying_item_hover_animation_duaration,
-			)
-		}
 
 		rl.DrawTextureEx(tex^, item_pos, 0, current_item_size / f32(tex.width), rl.WHITE)
+
+		hover_rect: rl.Rectangle = {
+			x      = item_pos[0],
+			y      = item_pos[1],
+			width  = current_item_size,
+			height = current_item_size * f32(tex.height) / f32(tex.width),
+		}
+
+		collide := rl.CheckCollisionPointRec(rl.GetMousePosition(), hover_rect)
+
+		buying_item_hover_animation[item] += f32(int(collide) * 2 - 1) * dt
+
+		buying_item_hover_animation[item] = clamp(
+			buying_item_hover_animation[item],
+			0,
+			buying_item_hover_animation_duaration,
+		)
+
+		if collide && rl.IsMouseButtonPressed(.LEFT) {
+			bought_item = item
+		}
 	}
 }
