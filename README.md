@@ -5,3 +5,5 @@ Textures from
 - https://github.com/BryantCabrera/Settlers-of-Catan/tree/master/resources
 - https://www.artstation.com/artwork/5BaaXW
 
+## How to use
+`odin run src`
