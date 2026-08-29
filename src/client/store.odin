@@ -1,28 +1,17 @@
-package main
+package client
 import "core:fmt"
 import "core:math"
 import rl "vendor:raylib"
+import "../common"
 
-BuyingItem :: enum {
-	SETTELMENT = 1,
-	CITY,
-	ROAD,
-	CARD,
-}
 
-bought_item: BuyingItem = nil
+bought_item: common.BuyingItem = nil
 
-costs: [BuyingItem][5]ResourceType = {
-	.ROAD       = {.WOOD, .CLAY, nil, nil, nil},
-	.SETTELMENT = {.WOOD, .CLAY, .SHEEP, .WHEAT, nil},
-	.CITY       = {.STONE, .STONE, .STONE, .WHEAT, .WHEAT},
-	.CARD       = {.STONE, .SHEEP, .WHEAT, nil, nil},
-}
 
 store_drawer_animation: f32 = 0
 store_drawer_animation_duaration: f32 = 0.4
 
-buying_item_hover_animation: [BuyingItem]f32
+buying_item_hover_animation: [common.BuyingItem]f32
 buying_item_hover_animation_duaration: f32 = 0.2
 
 get_store_scale :: proc() -> f32 {
@@ -31,7 +20,7 @@ get_store_scale :: proc() -> f32 {
 get_store_item_size :: proc() -> f32 {
   return f32(BannerSprites[.END].height) / 2 * get_store_scale();
 }
-draw_store_item :: proc(item: BuyingItem, pos: rl.Vector2, size: f32 = 1, color: rl.Color = rl.WHITE) {
+draw_store_item :: proc(item: common.BuyingItem, pos: rl.Vector2, size: f32 = 1, color: rl.Color = rl.WHITE) {
   item_size := get_store_item_size();
   tex := StoreSprites[item]
   centered_pos := rl.Vector2{
@@ -44,7 +33,7 @@ draw_store_item :: proc(item: BuyingItem, pos: rl.Vector2, size: f32 = 1, color:
 
 }
 
-draw_store :: proc(game: ^Game) {
+draw_store :: proc(game: ^common.Game) {
 	dt := rl.GetFrameTime()
 	end_sprite := &BannerSprites[.END]
 	mid_sprite := &BannerSprites[.MIDDLE]
@@ -60,7 +49,7 @@ draw_store :: proc(game: ^Game) {
 	animation_x := rl.EaseQuadOut(
 		store_drawer_animation,
 		0,
-		len(BuyingItem) * (item_size + item_margin) + item_margin,
+		len(common.BuyingItem) * (item_size + item_margin) + item_margin,
 		store_drawer_animation_duaration,
 	)
 	defer {
@@ -93,7 +82,7 @@ draw_store :: proc(game: ^Game) {
 		rl.DrawTextureEx(mid_sprite^, {x, pos[1]}, 0, scale, rl.WHITE)
 	}
 
-	for item, index in BuyingItem {
+	for item, index in common.BuyingItem {
 		x: f32 = end_sprite_end_x + item_margin + (item_size + item_margin) * f32(index)
 
 		if x > f32(rl.GetScreenWidth()) do break
@@ -110,7 +99,7 @@ draw_store :: proc(game: ^Game) {
 			pos[1] + item_margin - item_size * (item_animation - 1) / 2 + item_size / 2,
 		}
 
-    draw_store_item(item, item_pos, item_animation, current_player(game).color)
+    draw_store_item(item, item_pos, item_animation, common.current_player(game).color)
 
 		current_item_size := item_size * item_animation
 		tex := StoreSprites[item]

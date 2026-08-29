@@ -1,8 +1,9 @@
-package main
+package client
 import rl "vendor:raylib"
+import "../common"
 
-available_vertices_for_settelments := [dynamic]^Vertex{};
-calculate_available_vertices_for_settelments :: proc(game: ^Game) {
+available_vertices_for_settelments := [dynamic]^common.Vertex{};
+calculate_available_vertices_for_settelments :: proc(game: ^common.Game) {
   clear(&available_vertices_for_settelments);
   MAIN_LOOP: for &vertex in game.vertices {
     if vertex.obj.type != .NONE do continue;
@@ -16,14 +17,14 @@ calculate_available_vertices_for_settelments :: proc(game: ^Game) {
 
 }
 
-draw_road_hints :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+draw_road_hints :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 }
 
-draw_city_hints :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+draw_city_hints :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 }
 
 draw_settelment_hints :: proc(
-	game: ^Game,
+	game: ^common.Game,
 	w, h, radius, padding: f32,
 	screen_center: ^rl.Vector2,
 ) {
@@ -39,7 +40,7 @@ draw_settelment_hints :: proc(
 		rl.DrawCircleV(pos, vertex_radius, color)
     if selected && rl.IsMouseButtonPressed(.LEFT) {
       bought_item = nil;
-      vertex.obj = { type = .SETTELMENT, player = current_player(game) };
+      vertex.obj = { type = .SETTELMENT, player = common.current_player(game) };
       calculate_available_vertices_for_settelments(game);
     }
 	} 

@@ -1,10 +1,11 @@
 #+feature dynamic-literals
-package main
+package client
 import "core:fmt"
 import "core:strings"
 import rl "vendor:raylib"
-TileSprites: [TileType]rl.Texture
-CardSprites: [ResourceType]rl.Texture
+import "../common"
+TileSprites: [common.TileType]rl.Texture
+CardSprites: [common.ResourceType]rl.Texture
 
 BannerSprites: [enum {
 	END,
@@ -12,27 +13,27 @@ BannerSprites: [enum {
 }]rl.Texture
 
 VertexOption :: enum {
-	SETTELMENT = auto_cast BuyingItem.SETTELMENT,
-	CITY       = auto_cast BuyingItem.CITY,
+	SETTELMENT = auto_cast common.BuyingItem.SETTELMENT,
+	CITY       = auto_cast common.BuyingItem.CITY,
 }
 VertexSprites: #sparse[VertexOption]rl.Texture
 
-StoreSprites: [BuyingItem]^rl.Texture
+StoreSprites: [common.BuyingItem]^rl.Texture
 
 MainFont: rl.Font
 
-init_game :: proc(game: ^Game) {
+init_game :: proc(game: ^common.Game) {
 	init_board(game)
 	gen_board(game)
 
-	for type in TileType {
+	for type in common.TileType {
 		type_name := fmt.aprintf("%v", type)
 		TileSprites[type] = rl.LoadTexture(
 			rl.TextFormat("resources/hexes/%s.png", strings.to_lower(type_name)),
 		)
 	}
 
-	for type in ResourceType {
+	for type in common.ResourceType {
 		type_name := fmt.aprintf("%v", type)
 		CardSprites[type] = rl.LoadTexture(
 			rl.TextFormat("resources/resources/%s.png", strings.to_lower(type_name)),
@@ -64,7 +65,7 @@ init_game :: proc(game: ^Game) {
 	StoreSprites[.CITY] = &VertexSprites[.CITY]
 }
 
-delete_game :: proc(game: ^Game) {
+delete_game :: proc(game: ^common.Game) {
 	for tex in TileSprites do rl.UnloadTexture(tex)
 	for tex in CardSprites do rl.UnloadTexture(tex)
 	for tex in BannerSprites do rl.UnloadTexture(tex)
@@ -78,7 +79,7 @@ delete_game :: proc(game: ^Game) {
 }
 
 
-update_game :: proc(game: ^Game) {
+update_game :: proc(game: ^common.Game) {
 	if rl.IsKeyPressed(.R) {
 		gen_board(game)
 	}
@@ -90,7 +91,7 @@ update_game :: proc(game: ^Game) {
   }
 }
 
-draw_game :: proc(game: ^Game) {
+draw_game :: proc(game: ^common.Game) {
 	rl.BeginDrawing()
 	defer rl.EndDrawing()
 

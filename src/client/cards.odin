@@ -1,5 +1,6 @@
-package main
+package client
 import rl "vendor:raylib"
+import "../common"
 
 
 CardAnimationState :: struct {
@@ -11,7 +12,7 @@ cards_animation := [dynamic]CardAnimationState{}
 viewing_animation: f32 = 0
 viewing_animation_duaration :: 0.2
 
-update_card_animation_array :: proc(cards: ^[dynamic]Card) {
+update_card_animation_array :: proc(cards: ^[dynamic]common.Card) {
 	if len(cards) == len(cards_animation) do return
 
 	temp_cards_animation := make([dynamic]CardAnimationState, len(cards), cap(cards))
@@ -27,7 +28,7 @@ update_card_animation_array :: proc(cards: ^[dynamic]Card) {
 	delete(cards_animation)
 	cards_animation = temp_cards_animation
 }
-draw_cards :: proc(game: ^Game) {
+draw_cards :: proc(game: ^common.Game) {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
 	base_scale: f32 : 0.3
 	hovered_scale: f32 : 0.4

@@ -1,4 +1,4 @@
-package main
+package common
 import rl "vendor:raylib"
 
 TILE_ROWS :: 5

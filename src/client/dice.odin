@@ -1,9 +1,10 @@
-package main
+package client
 import "core:c"
 import "core:math/rand"
 import rl "vendor:raylib"
+import "../common"
 
-roll_dice :: proc(game: ^Game) {
+roll_dice :: proc(game: ^common.Game) {
 	random_range :: proc(from: u32, to: u32) -> u32 {
 		return (rand.uint32() % (to - from)) + from
 	}
@@ -46,7 +47,7 @@ draw_die :: proc(rect: rl.Rectangle, bg, fg: rl.Color, number: u8) {
 	}
 }
 
-draw_dice :: proc(game: ^Game) {
+draw_dice :: proc(game: ^common.Game) {
 	screen_width := rl.GetScreenWidth()
 	screen_height := rl.GetScreenHeight()
 
