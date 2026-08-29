@@ -84,6 +84,9 @@ update_game :: proc(game: ^Game) {
 	if rl.IsKeyPressed(.SPACE) {
 		roll_dice(game)
 	}
+  if rl.IsMouseButtonPressed(.RIGHT) {
+   bought_item = nil 
+  }
 }
 
 draw_game :: proc(game: ^Game) {

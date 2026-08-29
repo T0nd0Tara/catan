@@ -47,6 +47,7 @@ Tile :: struct {
 Vertex :: struct {
 	pos: rl.Vector2,
 	obj: VertexObject,
+  vertices: [3]^Vertex,
 }
 
 Edge :: struct {

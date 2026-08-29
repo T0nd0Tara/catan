@@ -1,6 +1,20 @@
 package main
 import rl "vendor:raylib"
 
+available_vertices_for_settelments := [dynamic]^Vertex{};
+calculate_available_vertices_for_settelments :: proc(game: ^Game) {
+  MAIN_LOOP: for &vertex in game.vertices {
+    if vertex.obj.type != .NONE do continue;
+    for neighbor in vertex.vertices {
+      if neighbor == nil do continue;
+      if neighbor.obj.type != .NONE do continue MAIN_LOOP;
+    }
+    
+    append(&available_vertices_for_settelments, &vertex)
+  }
+
+}
+
 draw_road_hints :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 }
 
@@ -13,10 +27,14 @@ draw_settelment_hints :: proc(
 	screen_center: ^rl.Vector2,
 ) {
 
-	for vertex, index in game.vertices {
-		pos := pos_to_screen(vertex.pos, radius, screen_center)
-		rl.DrawCircle(auto_cast pos[0], auto_cast pos[1], 10, rl.WHITE)
-		rl.DrawText(rl.TextFormat("%i", index), auto_cast pos[0], auto_cast pos[1], 5, rl.RED)
+  vertex_radius := radius / 8.0
 
+  mouse_pos := rl.GetMousePosition();
+
+	for vertex in available_vertices_for_settelments {
+		pos := pos_to_screen(vertex.pos, radius, screen_center)
+    selected := rl.CheckCollisionPointCircle(pos, mouse_pos, vertex_radius);
+    color := selected ? rl.RED : rl.WHITE
+		rl.DrawCircleV(pos, vertex_radius, color)
 	}
 }

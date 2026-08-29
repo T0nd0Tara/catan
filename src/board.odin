@@ -49,6 +49,9 @@ draw_board :: proc(game: ^Game) {
 
 draw_bought_hints :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	if bought_item == nil do return
+
+  draw_store_item(bought_item, rl.GetMousePosition(), 1, rl.Color{ 255, 255, 255, 128})
+
 	switch bought_item {
 	case .CARD:
 		return
@@ -283,6 +286,11 @@ init_board :: proc(game: ^Game) {
 		}
 	}
 
+  for &edge in game.edges {
+    append_ptr(&edge.vertices[0].vertices, edge.vertices[1])
+    append_ptr(&edge.vertices[1].vertices, edge.vertices[0])
+  }
+
 	{
 		for &vertex in game.vertices {
 			vertex.obj.type = .NONE
@@ -291,7 +299,7 @@ init_board :: proc(game: ^Game) {
 		game.vertices[10].obj.type = .SETTELMENT
 		game.vertices[20].obj.type = .CITY
 	}
-
+  calculate_available_vertices_for_settelments(game);
 }
 init_board_numbers :: proc(game: ^Game) {
 	fill_spiral :: proc(game: ^Game, row, col: int, board_numbers_index: int = 0) {
