@@ -110,7 +110,7 @@ draw_store :: proc(game: ^Game) {
 			pos[1] + item_margin - item_size * (item_animation - 1) / 2 + item_size / 2,
 		}
 
-    draw_store_item(item, item_pos, item_animation)
+    draw_store_item(item, item_pos, item_animation, current_player(game).color)
 
 		current_item_size := item_size * item_animation
 		tex := StoreSprites[item]

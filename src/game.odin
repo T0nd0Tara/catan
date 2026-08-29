@@ -55,8 +55,9 @@ init_game :: proc(game: ^Game) {
 
 	MainFont = rl.LoadFontEx("resources/fonts/Beaver Punch.otf", 256, nil, 0)
 
-	for &player in game.players {
+	for &player, i in game.players {
 		player.cards = {{.WOOD}, {.STONE}, {.WHEAT}, {.CLAY}, {.SHEEP}}
+    player.color = rl.ColorFromHSV(auto_cast ((i * 70) % 360), 0.8, 1);
 	}
 
 	StoreSprites[.SETTELMENT] = &VertexSprites[.SETTELMENT]

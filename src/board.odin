@@ -50,7 +50,7 @@ draw_board :: proc(game: ^Game) {
 draw_bought_hints :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	if bought_item == nil do return
 
-  draw_store_item(bought_item, rl.GetMousePosition(), 1, rl.Color{ 255, 255, 255, 128})
+  draw_store_item(bought_item, rl.GetMousePosition(), 1, rl.Fade(current_player(game).color, 0.5))
 
 	switch bought_item {
 	case .CARD:
@@ -81,7 +81,7 @@ draw_pieces :: proc(game: ^Game, w, h, radius, padding: f32, screen_center: ^rl.
 		pos[0] -= scale * f32(tex.width) / 2
 		pos[1] -= scale * f32(tex.height) / 2
 
-		rl.DrawTextureEx(tex, pos, 0, scale, rl.WHITE)
+		rl.DrawTextureEx(tex, pos, 0, scale, vertex.obj.player.color);
 	}
 
 	// for edge, index in game.edges {

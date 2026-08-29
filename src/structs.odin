@@ -26,7 +26,7 @@ VertexObject :: struct {
 		CITY = auto_cast BuyingItem.CITY,
 		NONE,
 	},
-	playerIndex: int,
+	player: ^Player,
 }
 
 EdgeObject :: struct {
@@ -34,7 +34,7 @@ EdgeObject :: struct {
 		ROAD = auto_cast BuyingItem.ROAD,
 		NONE,
 	},
-	playerIndex: int,
+	player: ^Player,
 }
 
 Tile :: struct {
@@ -60,6 +60,7 @@ Card :: struct {
 }
 Player :: struct {
 	cards: [dynamic]Card,
+  color: rl.Color,
 }
 
 Game :: struct {

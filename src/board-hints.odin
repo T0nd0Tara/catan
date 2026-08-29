@@ -39,7 +39,7 @@ draw_settelment_hints :: proc(
 		rl.DrawCircleV(pos, vertex_radius, color)
     if selected && rl.IsMouseButtonPressed(.LEFT) {
       bought_item = nil;
-      vertex.obj = { type = .SETTELMENT, playerIndex = 0 };
+      vertex.obj = { type = .SETTELMENT, player = current_player(game) };
       calculate_available_vertices_for_settelments(game);
     }
 	} 

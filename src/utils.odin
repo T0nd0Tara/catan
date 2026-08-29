@@ -8,3 +8,6 @@ append_ptr :: proc(arr: ^[$N]^$T, elem: ^T) -> bool {
   }
   return false;
 }
+current_player :: proc (game: ^Game) -> ^Player {
+  return &game.players[0];
+}
