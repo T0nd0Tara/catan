@@ -25,18 +25,37 @@ store_drawer_animation_duaration: f32 = 0.4
 buying_item_hover_animation: [BuyingItem]f32
 buying_item_hover_animation_duaration: f32 = 0.2
 
+get_store_scale :: proc() -> f32 {
+  return 2 * f32(BannerSprites[.END].height) / f32(rl.GetScreenHeight())
+}
+get_store_item_size :: proc() -> f32 {
+  return f32(BannerSprites[.END].height) / 2 * get_store_scale();
+}
+draw_store_item :: proc(item: BuyingItem, pos: rl.Vector2, size: f32 = 1, color: rl.Color = rl.WHITE) {
+  item_size := get_store_item_size();
+  tex := StoreSprites[item]
+  centered_pos := rl.Vector2{
+    pos[0] - item_size / 2,
+    pos[1] - item_size / 2,
+  }
+
+
+  rl.DrawTextureEx(tex^, centered_pos, 0, item_size * size / f32(tex.width), color)
+
+}
+
 draw_store :: proc(game: ^Game) {
 	dt := rl.GetFrameTime()
 	end_sprite := &BannerSprites[.END]
 	mid_sprite := &BannerSprites[.MIDDLE]
 
-	scale := 2 * f32(end_sprite.height) / f32(rl.GetScreenHeight())
+	scale := get_store_scale()
 	pos := rl.Vector2 {
 		f32(rl.GetScreenWidth()) - f32(end_sprite.width) * scale,
 		f32(rl.GetScreenHeight()) * 0.3,
 	}
 
-	item_size := f32(end_sprite.height) / 2 * scale
+	item_size := get_store_item_size();
 	item_margin: f32 = item_size / 5
 	animation_x := rl.EaseQuadOut(
 		store_drawer_animation,
@@ -87,14 +106,14 @@ draw_store :: proc(game: ^Game) {
 			buying_item_hover_animation_duaration,
 		)
 		item_pos: rl.Vector2 = {
-			x - item_size * (item_animation - 1) / 2,
-			pos[1] + item_margin - item_size * (item_animation - 1) / 2,
+			x - item_size * (item_animation - 1) / 2 + item_size / 2,
+			pos[1] + item_margin - item_size * (item_animation - 1) / 2 + item_size / 2,
 		}
+
+    draw_store_item(item, item_pos, item_animation)
+
 		current_item_size := item_size * item_animation
 		tex := StoreSprites[item]
-
-		rl.DrawTextureEx(tex^, item_pos, 0, current_item_size / f32(tex.width), rl.WHITE)
-
 		hover_rect: rl.Rectangle = {
 			x      = item_pos[0],
 			y      = item_pos[1],
