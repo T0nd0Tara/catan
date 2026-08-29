@@ -287,8 +287,8 @@ init_board :: proc(game: ^Game) {
 	}
 
   for &edge in game.edges {
-    append_ptr(&edge.vertices[0].vertices, edge.vertices[1])
-    append_ptr(&edge.vertices[1].vertices, edge.vertices[0])
+    assert(append_ptr(&edge.vertices[0].vertices, edge.vertices[1]))
+    assert(append_ptr(&edge.vertices[1].vertices, edge.vertices[0]))
   }
 
 	{
