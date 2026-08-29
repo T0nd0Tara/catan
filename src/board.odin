@@ -295,9 +295,6 @@ init_board :: proc(game: ^Game) {
 		for &vertex in game.vertices {
 			vertex.obj.type = .NONE
 		}
-
-		game.vertices[10].obj.type = .SETTELMENT
-		game.vertices[20].obj.type = .CITY
 	}
   calculate_available_vertices_for_settelments(game);
 }
