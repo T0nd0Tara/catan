@@ -22,9 +22,7 @@ StoreSprites: [common.BuyingItem]^rl.Texture
 
 MainFont: rl.Font
 
-init_game :: proc(game: ^common.Game) {
-	init_board(game)
-	gen_board(game)
+init_assets :: proc() {
 
 	for type in common.TileType {
 		type_name := fmt.aprintf("%v", type)
@@ -56,54 +54,39 @@ init_game :: proc(game: ^common.Game) {
 
 	MainFont = rl.LoadFontEx("resources/fonts/Beaver Punch.otf", 256, nil, 0)
 
-	for &player, i in game.players {
-		player.cards = {{.WOOD}, {.STONE}, {.WHEAT}, {.CLAY}, {.SHEEP}}
-    player.color = rl.ColorFromHSV(auto_cast ((i * 70) % 360), 0.8, 1);
-	}
+	// for &player, i in game.players {
+	// 	player.cards = {{.WOOD}, {.STONE}, {.WHEAT}, {.CLAY}, {.SHEEP}}
+	//    player.color = rl.ColorFromHSV(auto_cast ((i * 70) % 360), 0.8, 1);
+	// }
 
 	StoreSprites[.SETTELMENT] = &VertexSprites[.SETTELMENT]
 	StoreSprites[.CITY] = &VertexSprites[.CITY]
 }
 
-delete_game :: proc(game: ^common.Game) {
+delete_assets :: proc() {
 	for tex in TileSprites do rl.UnloadTexture(tex)
 	for tex in CardSprites do rl.UnloadTexture(tex)
 	for tex in BannerSprites do rl.UnloadTexture(tex)
 	for tex in VertexSprites do rl.UnloadTexture(tex)
 
 	rl.UnloadFont(MainFont)
-
-	for &player in game.players {
-		delete(player.cards)
-	}
 }
 
 
-update_game :: proc(game: ^common.Game) {
-	if rl.IsKeyPressed(.R) {
-		gen_board(game)
-	}
+update_game :: proc() {
 	if rl.IsKeyPressed(.SPACE) {
-		roll_dice(game)
+		roll_dice(&game)
 	}
   if rl.IsMouseButtonPressed(.RIGHT) {
    bought_item = nil 
   }
 }
 
-draw_game :: proc(game: ^common.Game) {
-	rl.BeginDrawing()
-	defer rl.EndDrawing()
+draw_game :: proc() {
 
-	rl.ClearBackground(rl.BLACK)
+	draw_board(&game)
+	draw_dice(&game)
+	draw_store(&game)
+	draw_cards(&game)
 
-	draw_board(game)
-	draw_dice(game)
-	draw_store(game)
-	draw_cards(game)
-
-	dt := rl.GetFrameTime()
-	fps := 1.0 / dt
-	rl.DrawText(rl.TextFormat("dt: %f", dt), 0, 0, 20, rl.WHITE)
-	rl.DrawText(rl.TextFormat("fps: %f", fps), 0, 30, 20, rl.WHITE)
 }

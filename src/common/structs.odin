@@ -59,6 +59,7 @@ Card :: struct {
 	type: ResourceType,
 }
 Player :: struct {
+  id: int,
 	cards: [dynamic]Card,
   color: rl.Color,
 }
@@ -68,5 +69,6 @@ Game :: struct {
 	vertices: [54]Vertex,
 	edges:    [72]Edge,
 	dice:     [2]u8,
-	players:  [1]Player,
+	players:  [dynamic]Player,
+	started:  bool,
 }
