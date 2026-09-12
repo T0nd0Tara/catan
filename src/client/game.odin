@@ -4,8 +4,10 @@ import "core:fmt"
 import "core:strings"
 import rl "vendor:raylib"
 import "../common"
+
 TileSprites: [common.TileType]rl.Texture
 CardSprites: [common.ResourceType]rl.Texture
+BackCardSprite: rl.Texture
 
 BannerSprites: [enum {
 	END,
@@ -23,7 +25,6 @@ StoreSprites: [common.BuyingItem]^rl.Texture
 MainFont: rl.Font
 
 init_assets :: proc() {
-
 	for type in common.TileType {
 		type_name := fmt.aprintf("%v", type)
 		TileSprites[type] = rl.LoadTexture(
@@ -37,6 +38,7 @@ init_assets :: proc() {
 			rl.TextFormat("resources/resources/%s.png", strings.to_lower(type_name)),
 		)
 	}
+  BackCardSprite = rl.LoadTexture("resources/resources/backcard.png")
 
 	for _, type in BannerSprites {
 		type_name := fmt.aprintf("%v", type)
@@ -69,6 +71,7 @@ delete_assets :: proc() {
 	for tex in BannerSprites do rl.UnloadTexture(tex)
 	for tex in VertexSprites do rl.UnloadTexture(tex)
 
+  rl.UnloadTexture(BackCardSprite)
 	rl.UnloadFont(MainFont)
 }
 
@@ -86,8 +89,8 @@ draw_game :: proc() {
 
 	draw_board()
 	draw_dice()
+  draw_oponents()
 	draw_store()
 	draw_cards()
 
-  draw_oponents()
 }

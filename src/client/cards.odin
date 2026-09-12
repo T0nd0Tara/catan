@@ -98,6 +98,41 @@ draw_cards :: proc() {
 
 	}
 }
+draw_oponent_cards:: proc(anchor: rl.Vector2, angle: f32, cards_len: int) {
+  fan_view_angle : f32 : math.PI / 3
+  card_scale : f32 : 0.1
+  inner_fold_radius :: 15
+  distance :: 80
+  cards_anchor : rl.Vector2 = {
+    anchor.x - distance * math.cos(angle),
+    anchor.y - distance * math.sin(angle),
+  }
+
+  source : rl.Rectangle = {
+    0,0, f32(BackCardSprite.width), f32(BackCardSprite.height)
+  }
+  dest : rl.Rectangle = {
+    cards_anchor.x,
+    cards_anchor.y,
+    card_scale * f32(BackCardSprite.width), card_scale * f32(BackCardSprite.height)
+  }
+
+  for i in 0..<cards_len {
+    t := f32(i + 1) / f32(cards_len + 1)
+    start := math.PI + angle + fan_view_angle
+    end   := math.PI + angle - fan_view_angle
+
+    card_angle : f32 = t * (end - start) + start
+
+    origin : rl.Vector2 = { 
+      dest.width / 2,
+      dest.height + inner_fold_radius
+    }
+
+    rl.DrawTexturePro(BackCardSprite, source, dest, origin, (card_angle - math.PI / 2) * math.DEG_PER_RAD, rl.WHITE)
+  }
+}
+
 draw_oponent:: proc(angle: f32, player: ^common.Player) {
   radius_x : f32 = f32(rl.GetScreenWidth() / 2)  * 0.9;
   radius_y : f32 = f32(rl.GetScreenHeight() / 2) * 0.9;
@@ -105,6 +140,11 @@ draw_oponent:: proc(angle: f32, player: ^common.Player) {
   anchor : rl.Vector2 = {
     radius_x * math.cos(angle) + f32(rl.GetScreenWidth()) / 2,
     radius_y * math.sin(angle) + f32(rl.GetScreenHeight()) / 2,
+  }
+  draw_oponent_cards(anchor, angle, len(player.cards))
+
+  if (player.id == game.current_player_turn) {
+    rl.DrawCircleV(anchor, 15, rl.YELLOW)
   }
   rl.DrawCircleV(anchor, 10, player.color)
 }
