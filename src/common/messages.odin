@@ -1,12 +1,11 @@
 package common
-import "core:reflect"
-import "core:fmt"
-import "core:strings"
 import "core:encoding/cbor"
-import "base:runtime"
 
 MsgAddPlayer :: struct {
   player: Player
+};
+MsgCurrentPlayer :: struct {
+  player_idx: int
 };
 MsgFullGameState :: struct {
   game: Game
@@ -14,6 +13,7 @@ MsgFullGameState :: struct {
 
 Msg :: union {
   MsgAddPlayer,
+  MsgCurrentPlayer,
   MsgFullGameState,
 };
 

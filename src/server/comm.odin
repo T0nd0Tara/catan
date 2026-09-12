@@ -1,6 +1,7 @@
 package server
 import "core:nbio"
 import "core:fmt"
+import "core:slice"
 import "core:encoding/json"
 import "core:container/xar"
 import "../common"
@@ -12,6 +13,14 @@ send_to_all :: proc (msg: common.Msg) {
     nbio.send_poly(connection.sock, {str_msg}, connection, on_sent)
   }
 }
+send_to_all_except :: proc (connection_ids: []int, msg: common.Msg) {
+  str_msg, err := common.encode_msg(msg)
+  it := xar.freelist_iterator(&s.connections)
+  for connection, index in xar.freelist_iterate_by_ptr(&it) {
+    _, found := slice.linear_search(connection_ids, connection.id)
+    if (!found) do nbio.send_poly(connection.sock, {str_msg}, connection, on_sent)
+  }
+}
 
 send :: proc (connection: ^Connection, msg: common.Msg) {
   str_msg, err := common.encode_msg(msg)
@@ -19,10 +28,7 @@ send :: proc (connection: ^Connection, msg: common.Msg) {
     fmt.println("Error trying to encode message", err)
     return;
   }
-  fmt.println("sending message", str_msg[:8])
-	nbio.send_poly2(connection.sock, {str_msg}, connection, &str_msg, proc(op: ^nbio.Operation, connection: ^Connection, heap_str: ^[]byte) {
-    on_sent(op, connection)
-  })
+	nbio.send_poly(connection.sock, {str_msg}, connection, on_sent)
 }
 
 on_sent :: proc(op: ^nbio.Operation, connection: ^Connection) {

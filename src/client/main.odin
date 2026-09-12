@@ -9,6 +9,7 @@ import "../common"
 
 game: common.Game
 current_player: ^common.Player = nil
+
 server_initialized := false
 
 should_quit: bool = false
@@ -30,8 +31,7 @@ game_loop :: proc(op: ^nbio.Operation) {
 
 	rl.BeginDrawing()
 	defer rl.EndDrawing()
-
-	rl.ClearBackground(rl.BLACK)
+  rl.ClearBackground(rl.BLACK)
   if server_initialized {
     update_game()
     draw_game()
@@ -43,10 +43,6 @@ game_loop :: proc(op: ^nbio.Operation) {
 	fps := 1.0 / dt
 	rl.DrawText(rl.TextFormat("dt: %f", dt), 0, 0, 20, rl.WHITE)
 	rl.DrawText(rl.TextFormat("fps: %f", fps), 0, 30, 20, rl.WHITE)
-}
-temp :: proc(op: ^nbio.Operation) {
-  fmt.println("temp")
-  nbio.next_tick(temp)
 }
 main :: proc() {
 	err := nbio.acquire_thread_event_loop()

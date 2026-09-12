@@ -47,7 +47,7 @@ Tile :: struct {
 Vertex :: struct {
 	pos: rl.Vector2,
 	obj: VertexObject,
-  vertices: [dynamic]int, // between 2 - 3
+  vertices: [dynamic; 3]int, // between 2 - 3
 }
 
 Edge :: struct {

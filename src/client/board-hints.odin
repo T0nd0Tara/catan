@@ -3,7 +3,7 @@ import rl "vendor:raylib"
 import "../common"
 
 available_vertices_for_settelments := [dynamic]^common.Vertex{};
-calculate_available_vertices_for_settelments :: proc(game: ^common.Game) {
+calculate_available_vertices_for_settelments :: proc() {
   clear(&available_vertices_for_settelments);
   MAIN_LOOP: for &vertex in game.vertices {
     if vertex.obj.type != .NONE do continue;
@@ -39,8 +39,8 @@ draw_settelment_hints :: proc(
 		rl.DrawCircleV(pos, vertex_radius, color)
     if selected && rl.IsMouseButtonPressed(.LEFT) {
       bought_item = nil;
-      vertex.obj = { type = .SETTELMENT, playerId = 0 };
-      calculate_available_vertices_for_settelments(game);
+      vertex.obj = { type = .SETTELMENT, playerId = current_player.id };
+      calculate_available_vertices_for_settelments();
     }
 	} 
 }

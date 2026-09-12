@@ -31,7 +31,13 @@ recv_loop :: proc (op: ^nbio.Operation) {
   case common.MsgFullGameState: {
     server_initialized = true
     game = m.game
+    calculate_available_vertices_for_settelments()
     // fmt.println("recieved msg:", string(recv_buff[:]))
+  }
+  case common.MsgCurrentPlayer: {
+    assert(server_initialized, "Got current player before initialization")
+    current_player = common.find_player_by_id(&game.players, m.player_idx)
+    fmt.println("current player", current_player)
   }
   }
 

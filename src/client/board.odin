@@ -44,8 +44,6 @@ draw_pieces :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_cente
 	//  }
 	for vertex, index in game.vertices {
 		if vertex.obj.type == .NONE do continue
-
-    fmt.println(index, vertex)
 		tex := VertexSprites[auto_cast vertex.obj.type]
 		scale := radius / f32(max(tex.width, tex.height)) / 1.5
 		pos := pos_to_screen(vertex.pos, radius, screen_center)
