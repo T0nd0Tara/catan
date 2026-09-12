@@ -4,16 +4,13 @@ import "core:encoding/cbor"
 MsgAddPlayer :: struct {
   player: Player
 };
-MsgCurrentPlayer :: struct {
-  player_idx: int
-};
 MsgFullGameState :: struct {
-  game: Game
+  game: Game,
+  connection_id: int,
 };
 
 Msg :: union {
   MsgAddPlayer,
-  MsgCurrentPlayer,
   MsgFullGameState,
 };
 

@@ -64,8 +64,7 @@ on_accept :: proc(op: ^nbio.Operation, s: ^Server) {
   assert(alloc_err == nil)
 
   player_idx := add_player(connection.id)
-  send(connection, common.MsgFullGameState{ game })
-  send(connection, common.MsgCurrentPlayer{ player_idx })
+  send(connection, common.MsgFullGameState{ game, connection.id })
 
   send_to_all_except({connection.id}, common.MsgAddPlayer {
     player = game.players[player_idx]

@@ -27,17 +27,21 @@ recv_loop :: proc (op: ^nbio.Operation) {
     return
   }
 
-  #partial switch m in msg {
+  switch m in msg {
   case common.MsgFullGameState: {
     server_initialized = true
     game = m.game
     calculate_available_vertices_for_settelments()
-    // fmt.println("recieved msg:", string(recv_buff[:]))
-  }
-  case common.MsgCurrentPlayer: {
-    assert(server_initialized, "Got current player before initialization")
-    current_player = common.find_player_by_id(&game.players, m.player_idx)
+
+    connection_id = m.connection_id;
+    current_player = common.find_player_by_id(&game.players, connection_id)
     fmt.println("current player", current_player)
+  }
+  case common.MsgAddPlayer: {
+    assert(server_initialized, "Got MsgAddPlayer before initialization")
+    append(&game.players, m.player)
+    current_player = common.find_player_by_id(&game.players, connection_id)
+    fmt.println("appended player", m.player)
   }
   }
 
