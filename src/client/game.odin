@@ -88,4 +88,6 @@ draw_game :: proc() {
 	draw_dice()
 	draw_store()
 	draw_cards()
+
+  draw_oponents()
 }

@@ -1,5 +1,7 @@
 package client
 import rl "vendor:raylib"
+import "core:math"
+import "core:fmt"
 import "../common"
 
 
@@ -29,8 +31,6 @@ update_card_animation_array :: proc(cards: ^[dynamic]common.Card) {
 	cards_animation = temp_cards_animation
 }
 draw_cards :: proc() {
-  if (current_player == nil) do return;
-
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
 	base_scale: f32 : 0.3
 	hovered_scale: f32 : 0.4
@@ -97,4 +97,35 @@ draw_cards :: proc() {
 		cards_animation[i].hovered = clamp(cards_animation[i].hovered, 0, 1)
 
 	}
+}
+draw_oponent:: proc(angle: f32, player: ^common.Player) {
+  radius_x : f32 = f32(rl.GetScreenWidth() / 2)  * 0.9;
+  radius_y : f32 = f32(rl.GetScreenHeight() / 2) * 0.9;
+
+  anchor : rl.Vector2 = {
+    radius_x * math.cos(angle) + f32(rl.GetScreenWidth()) / 2,
+    radius_y * math.sin(angle) + f32(rl.GetScreenHeight()) / 2,
+  }
+  rl.DrawCircleV(anchor, 10, player.color)
+}
+draw_oponents :: proc() {
+  // oponents are spaced evenly between -oponents_view_angle to oponents_view_angle
+  oponents_view_angle : f32 : math.PI / 2
+  oponents_count := len(game.players) - 1
+
+
+  oponent_counter: f32 = 0
+
+  for &player in game.players {
+    if (&player == current_player) do continue;
+    defer oponent_counter += 1
+
+    // the `+ 1` is there because we imagine a player in the start so the players will be orderd uniformly
+    t : f32 = (oponent_counter + 1) / f32(oponents_count + 1)
+    start := 1.5 * math.PI - oponents_view_angle
+    end   := 1.5 * math.PI + oponents_view_angle
+    angle : f32 =  t * (end - start) + start
+
+    draw_oponent(angle, &player);
+  }
 }

@@ -6,20 +6,21 @@ import rl "vendor:raylib"
 
 draw_board :: proc() {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
-	radius: f32 = f32(min(rl.GetScreenWidth(), rl.GetScreenHeight())) / 10
 	padding: f32 : 0.05
+	radius: f32 = (1 - padding) * f32(min(rl.GetScreenWidth(), rl.GetScreenHeight())) / 10
+
+	gap: f32 : 0.05
 	h := 2 * radius
 	w := 2 * radius * math.cos_f32(math.PI / 6.0)
 
 
-	draw_tiles(w, h, radius, padding, &screen_center)
-	draw_pieces(w, h, radius, padding, &screen_center)
-	draw_bought_hints(w, h, radius, padding, &screen_center)
+	draw_tiles(w, h, radius, gap, &screen_center)
+	draw_pieces(w, h, radius, gap, &screen_center)
+	draw_bought_hints(w, h, radius, gap, &screen_center)
 }
 
 draw_bought_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	if bought_item == nil do return
-	if current_player == nil do return
 
   draw_store_item(bought_item, rl.GetMousePosition(), 1, rl.Fade(current_player.color, 0.5))
 
