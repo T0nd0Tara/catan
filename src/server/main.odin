@@ -34,7 +34,7 @@ main :: proc() {
 	defer nbio.release_thread_event_loop()
 
 	init_board()
-	gen_board()
+	reset_game()
 
 
 	socket, listen_err := nbio.listen_tcp({nbio.IP4_Any, 8080})

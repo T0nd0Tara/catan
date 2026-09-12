@@ -5,7 +5,7 @@ import "core:math"
 import rl "vendor:raylib"
 
 
-gen_board :: proc() {
+reset_game :: proc() {
 	max_amount_of_tile: [common.TileType]u8 = {
 		common.TileType.DESERT = 1,
 		common.TileType.STONE  = 3,
@@ -34,6 +34,8 @@ gen_board :: proc() {
 	}
 
 	init_board_numbers()
+
+  game.current_player_turn = -1
 }
 
 init_board :: proc() {

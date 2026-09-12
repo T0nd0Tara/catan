@@ -71,4 +71,5 @@ Game :: struct {
 	dice:     [2]u8,
 	players:  [dynamic]Player,
 	started:  bool,
+  current_player_turn: int,
 }
