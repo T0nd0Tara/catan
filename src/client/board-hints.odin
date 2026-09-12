@@ -16,14 +16,13 @@ calculate_available_vertices_for_settelments :: proc() {
 
 }
 
-draw_road_hints :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+draw_road_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 }
 
-draw_city_hints :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+draw_city_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 }
 
 draw_settelment_hints :: proc(
-	game: ^common.Game,
 	w, h, radius, padding: f32,
 	screen_center: ^rl.Vector2,
 ) {

@@ -84,9 +84,8 @@ update_game :: proc() {
 
 draw_game :: proc() {
 
-	draw_board(&game)
-	draw_dice(&game)
-	draw_store(&game)
-	draw_cards(&game)
-
+	draw_board()
+	draw_dice()
+	draw_store()
+	draw_cards()
 }

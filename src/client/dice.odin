@@ -47,7 +47,7 @@ draw_die :: proc(rect: rl.Rectangle, bg, fg: rl.Color, number: u8) {
 	}
 }
 
-draw_dice :: proc(game: ^common.Game) {
+draw_dice :: proc() {
 	screen_width := rl.GetScreenWidth()
 	screen_height := rl.GetScreenHeight()
 

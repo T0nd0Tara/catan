@@ -28,7 +28,7 @@ update_card_animation_array :: proc(cards: ^[dynamic]common.Card) {
 	delete(cards_animation)
 	cards_animation = temp_cards_animation
 }
-draw_cards :: proc(game: ^common.Game) {
+draw_cards :: proc() {
   if (current_player == nil) do return;
 
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}

@@ -4,7 +4,7 @@ import "core:math"
 import "core:fmt"
 import rl "vendor:raylib"
 
-draw_board :: proc(game: ^common.Game) {
+draw_board :: proc() {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
 	radius: f32 = f32(min(rl.GetScreenWidth(), rl.GetScreenHeight())) / 10
 	padding: f32 : 0.05
@@ -12,12 +12,12 @@ draw_board :: proc(game: ^common.Game) {
 	w := 2 * radius * math.cos_f32(math.PI / 6.0)
 
 
-	draw_tiles(game, w, h, radius, padding, &screen_center)
-	draw_pieces(game, w, h, radius, padding, &screen_center)
-	draw_bought_hints(game, w, h, radius, padding, &screen_center)
+	draw_tiles(w, h, radius, padding, &screen_center)
+	draw_pieces(w, h, radius, padding, &screen_center)
+	draw_bought_hints(w, h, radius, padding, &screen_center)
 }
 
-draw_bought_hints :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+draw_bought_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	if bought_item == nil do return
 	if current_player == nil do return
 
@@ -28,15 +28,15 @@ draw_bought_hints :: proc(game: ^common.Game, w, h, radius, padding: f32, screen
 		return
 
 	case .ROAD:
-		draw_road_hints(game, w, h, radius, padding, screen_center)
+		draw_road_hints(w, h, radius, padding, screen_center)
 	case .CITY:
-		draw_city_hints(game, w, h, radius, padding, screen_center)
+		draw_city_hints(w, h, radius, padding, screen_center)
 	case .SETTELMENT:
-		draw_settelment_hints(game, w, h, radius, padding, screen_center)
+		draw_settelment_hints(w, h, radius, padding, screen_center)
 	}
 }
 
-draw_pieces :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+draw_pieces :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	// for edge, index in game.edges {
 	//    if edge.obj.type == .NONE do continue;
 	//
@@ -80,7 +80,7 @@ pos_to_screen := proc(pos: rl.Vector2, radius: f32, screen_center: ^rl.Vector2) 
 	}
 }
 
-draw_tiles :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+draw_tiles :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
 	for tile in game.tiles {
 		tex := TileSprites[tile.type]

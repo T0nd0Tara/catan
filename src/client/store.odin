@@ -33,7 +33,7 @@ draw_store_item :: proc(item: common.BuyingItem, pos: rl.Vector2, size: f32 = 1,
 
 }
 
-draw_store :: proc(game: ^common.Game) {
+draw_store :: proc() {
   if (current_player == nil) do return;
 
 	dt := rl.GetFrameTime()
