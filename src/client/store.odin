@@ -34,6 +34,8 @@ draw_store_item :: proc(item: common.BuyingItem, pos: rl.Vector2, size: f32 = 1,
 }
 
 draw_store :: proc(game: ^common.Game) {
+  if (current_player == nil) do return;
+
 	dt := rl.GetFrameTime()
 	end_sprite := &BannerSprites[.END]
 	mid_sprite := &BannerSprites[.MIDDLE]
@@ -99,7 +101,7 @@ draw_store :: proc(game: ^common.Game) {
 			pos[1] + item_margin - item_size * (item_animation - 1) / 2 + item_size / 2,
 		}
 
-    draw_store_item(item, item_pos, item_animation, common.current_player(game).color)
+    draw_store_item(item, item_pos, item_animation, current_player.color)
 
 		current_item_size := item_size * item_animation
 		tex := StoreSprites[item]

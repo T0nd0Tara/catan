@@ -1,6 +1,7 @@
 package client
 import "../common"
 import "core:math"
+import "core:fmt"
 import rl "vendor:raylib"
 
 draw_board :: proc(game: ^common.Game) {
@@ -18,8 +19,9 @@ draw_board :: proc(game: ^common.Game) {
 
 draw_bought_hints :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	if bought_item == nil do return
+	if current_player == nil do return
 
-  draw_store_item(bought_item, rl.GetMousePosition(), 1, rl.Fade(common.current_player(game).color, 0.5))
+  draw_store_item(bought_item, rl.GetMousePosition(), 1, rl.Fade(current_player.color, 0.5))
 
 	switch bought_item {
 	case .CARD:
@@ -43,6 +45,7 @@ draw_pieces :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_cente
 	for vertex, index in game.vertices {
 		if vertex.obj.type == .NONE do continue
 
+    fmt.println(index, vertex)
 		tex := VertexSprites[auto_cast vertex.obj.type]
 		scale := radius / f32(max(tex.width, tex.height)) / 1.5
 		pos := pos_to_screen(vertex.pos, radius, screen_center)
@@ -50,7 +53,9 @@ draw_pieces :: proc(game: ^common.Game, w, h, radius, padding: f32, screen_cente
 		pos[0] -= scale * f32(tex.width) / 2
 		pos[1] -= scale * f32(tex.height) / 2
 
-		rl.DrawTextureEx(tex, pos, 0, scale, vertex.obj.player.color);
+
+    player := common.find_player_by_id(&game.players, vertex.obj.playerId)
+    if (player != nil) do rl.DrawTextureEx(tex, pos, 0, scale, player.color);
 	}
 
 	// for edge, index in game.edges {

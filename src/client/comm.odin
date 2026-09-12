@@ -18,13 +18,20 @@ recv_loop :: proc (op: ^nbio.Operation) {
   fmt.println("recv")
   fmt.assertf(op.type == .Recv, "op type not recv")
 
-  recv :=  transmute(^nbio.Recv)op
 
-  msg := common.decode_msg(recv_buff[:])
+  recv := transmute(^nbio.Recv)op
+  msg, err := common.decode_msg(recv_buff[:])
+  fmt.println(msg)
+  if (err != nil) {
+    fmt.println("err", err)
+    return
+  }
+
   #partial switch m in msg {
   case common.MsgFullGameState: {
     server_initialized = true
     game = m.game
+    // fmt.println("recieved msg:", string(recv_buff[:]))
   }
   }
 

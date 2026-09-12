@@ -19,9 +19,8 @@ send :: proc (connection: ^Connection, msg: common.Msg) {
     fmt.println("Error trying to encode message", err)
     return;
   }
-  fmt.println(str_msg)
+  fmt.println("sending message", str_msg[:8])
 	nbio.send_poly2(connection.sock, {str_msg}, connection, &str_msg, proc(op: ^nbio.Operation, connection: ^Connection, heap_str: ^[]byte) {
-    delete(heap_str^)
     on_sent(op, connection)
   })
 }

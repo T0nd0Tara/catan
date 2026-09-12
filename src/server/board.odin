@@ -69,27 +69,27 @@ init_board :: proc() {
 			// edges
 			for i in 0 ..< row_length {
 				game.edges[edge_index].vertices = {
-					&game.vertices[base[0] + i],
-					&game.vertices[base[1] + i],
+					base[0] + i,
+					base[1] + i,
 				}
 				edge_index += 1
 
 				game.edges[edge_index].vertices = {
-					&game.vertices[base[0] + i],
-					&game.vertices[base[2] + i],
+					base[0] + i,
+					base[2] + i,
 				}
 				edge_index += 1
 
 				if last_row {
 					game.edges[edge_index].vertices = {
-						&game.vertices[base[3] + i],
-						&game.vertices[base[5] + i],
+						base[3] + i,
+						base[5] + i,
 					}
 					edge_index += 1
 
 					game.edges[edge_index].vertices = {
-						&game.vertices[base[4] + i],
-						&game.vertices[base[5] + i],
+						base[4] + i,
+						base[5] + i,
 					}
 					edge_index += 1
 				}
@@ -97,22 +97,22 @@ init_board :: proc() {
 
 			for i in 0 ..= row_length {
 				game.edges[edge_index].vertices = {
-					&game.vertices[base[1] + i],
-					&game.vertices[base[3] + i],
+					base[1] + i,
+					base[3] + i,
 				}
 				edge_index += 1
 			}
 
 			if will_taper && !last_row {
 				game.edges[edge_index].vertices = {
-					&game.vertices[base[3]],
-					&game.vertices[base[5]],
+					base[3],
+					base[5],
 				}
 				edge_index += 1
 
 				game.edges[edge_index].vertices = {
-					&game.vertices[base[4] + row_length - 1],
-					&game.vertices[base[5] + row_length - 1],
+					base[4] + row_length - 1,
+					base[5] + row_length - 1,
 				}
 				edge_index += 1
 			}
@@ -122,7 +122,7 @@ init_board :: proc() {
 			for i in 0 ..< row_length {
 				tile := &game.tiles[first_tile_of_row + i]
 				for vertex_index, index in base {
-					tile.vertices[index] = &game.vertices[vertex_index + i]
+					tile.vertices[index] = vertex_index + i
 				}
 			}
 		}
@@ -162,20 +162,20 @@ init_board :: proc() {
 				//   5
 				vertices := game.tiles[i].vertices
 
-				vertices[0].pos = {pos[0], pos[1] - r}
-				vertices[5].pos = {pos[0], pos[1] + r}
+				game.vertices[vertices[0]].pos = {pos[0], pos[1] - r}
+				game.vertices[vertices[5]].pos = {pos[0], pos[1] + r}
 
-				vertices[1].pos = {pos[0] - r * cos30, pos[1] - r * sin30}
-				vertices[2].pos = {pos[0] + r * cos30, pos[1] - r * sin30}
-				vertices[3].pos = {pos[0] - r * cos30, pos[1] + r * sin30}
-				vertices[4].pos = {pos[0] + r * cos30, pos[1] + r * sin30}
+				game.vertices[vertices[1]].pos = {pos[0] - r * cos30, pos[1] - r * sin30}
+				game.vertices[vertices[2]].pos = {pos[0] + r * cos30, pos[1] - r * sin30}
+				game.vertices[vertices[3]].pos = {pos[0] - r * cos30, pos[1] + r * sin30}
+				game.vertices[vertices[4]].pos = {pos[0] + r * cos30, pos[1] + r * sin30}
 			}
 		}
 	}
 
   for &edge in game.edges {
-    assert(common.append_ptr(&edge.vertices[0].vertices, edge.vertices[1]))
-    assert(common.append_ptr(&edge.vertices[1].vertices, edge.vertices[0]))
+    append_elem(&game.vertices[edge.vertices[0]].vertices, edge.vertices[1])
+    append_elem(&game.vertices[edge.vertices[1]].vertices, edge.vertices[0])
   }
 
 	{

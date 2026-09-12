@@ -7,9 +7,8 @@ calculate_available_vertices_for_settelments :: proc(game: ^common.Game) {
   clear(&available_vertices_for_settelments);
   MAIN_LOOP: for &vertex in game.vertices {
     if vertex.obj.type != .NONE do continue;
-    for neighbor in vertex.vertices {
-      if neighbor == nil do continue;
-      if neighbor.obj.type != .NONE do continue MAIN_LOOP;
+    for neighbor_idx in vertex.vertices {
+      if game.vertices[neighbor_idx].obj.type != .NONE do continue MAIN_LOOP;
     }
     
     append(&available_vertices_for_settelments, &vertex)
@@ -40,7 +39,7 @@ draw_settelment_hints :: proc(
 		rl.DrawCircleV(pos, vertex_radius, color)
     if selected && rl.IsMouseButtonPressed(.LEFT) {
       bought_item = nil;
-      vertex.obj = { type = .SETTELMENT, player = common.current_player(game) };
+      vertex.obj = { type = .SETTELMENT, playerId = 0 };
       calculate_available_vertices_for_settelments(game);
     }
 	} 

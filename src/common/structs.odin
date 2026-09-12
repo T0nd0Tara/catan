@@ -22,36 +22,36 @@ TileType :: enum {
 
 VertexObject :: struct {
 	type:        enum {
+		NONE,
 		SETTELMENT = auto_cast BuyingItem.SETTELMENT,
 		CITY = auto_cast BuyingItem.CITY,
-		NONE,
 	},
-	player: ^Player,
+	playerId: int,
 }
 
 EdgeObject :: struct {
 	type:        enum {
-		ROAD = auto_cast BuyingItem.ROAD,
 		NONE,
+		ROAD = auto_cast BuyingItem.ROAD,
 	},
-	player: ^Player,
+	playerId: int,
 }
 
 Tile :: struct {
 	type:     TileType,
 	pos:      rl.Vector2,
-	vertices: [6]^Vertex,
+	vertices: [6]int,
 	number:   u8, // 7 if type == .DESERT
 }
 
 Vertex :: struct {
 	pos: rl.Vector2,
 	obj: VertexObject,
-  vertices: [3]^Vertex,
+  vertices: [dynamic]int, // between 2 - 3
 }
 
 Edge :: struct {
-	vertices: [2]^Vertex,
+	vertices: [2]int,
 	obj:      EdgeObject,
 }
 

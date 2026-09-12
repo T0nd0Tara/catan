@@ -29,6 +29,8 @@ update_card_animation_array :: proc(cards: ^[dynamic]common.Card) {
 	cards_animation = temp_cards_animation
 }
 draw_cards :: proc(game: ^common.Game) {
+  if (current_player == nil) do return;
+
 	screen_center := rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight() / 2)}
 	base_scale: f32 : 0.3
 	hovered_scale: f32 : 0.4
@@ -37,7 +39,7 @@ draw_cards :: proc(game: ^common.Game) {
 	dt := rl.GetFrameTime()
 
 
-	cards := game.players[0].cards
+	cards := current_player.cards
 
 	update_card_animation_array(&cards)
 

@@ -8,6 +8,7 @@ import rl "vendor:raylib"
 import "../common"
 
 game: common.Game
+current_player: ^common.Player = nil
 server_initialized := false
 
 should_quit: bool = false
