@@ -6,4 +6,5 @@ Textures from
 - https://www.artstation.com/artwork/5BaaXW
 
 ## How to use
-`odin run src`
+`odin run src/server`
+`odin run src/client`
