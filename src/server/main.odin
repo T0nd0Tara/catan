@@ -26,6 +26,7 @@ Connection :: struct {
 id_counter := 0
 
 game : common.Game
+
 s: Server
 
 main :: proc() {
@@ -64,6 +65,8 @@ on_accept :: proc(op: ^nbio.Operation, s: ^Server) {
   assert(alloc_err == nil)
 
   player_idx := add_player(connection.id)
+  game.host_player_id = calc_host()
+
   send(connection, common.MsgFullGameState{ game, connection.id })
 	nbio.recv_poly(connection.sock, {connection.buf[:]}, connection, on_recv)
 

@@ -98,4 +98,5 @@ draw_game :: proc() {
 	draw_store()
 	draw_cards()
   draw_title()
+  draw_host_ui()
 }

@@ -35,7 +35,7 @@ recv_loop :: proc (op: ^nbio.Operation) {
     connection_id = m.connection_id;
     current_player, _ = common.find_player_by_id(&game.players, connection_id)
     fmt.println("current player", current_player)
-    current_title_animation = get_title_animation_state("Welcome")
+    current_title_animation = game.host_player_id == connection_id ? get_title_animation_state("You're the host") : get_title_animation_state("Welcome")
   }
   case common.MsgAddPlayer: {
     assert(server_initialized, "Got MsgAddPlayer before initialization")
@@ -49,7 +49,11 @@ recv_loop :: proc (op: ^nbio.Operation) {
     if (idx == -1) do break;
     ordered_remove(&game.players, idx)
     current_player, _ = common.find_player_by_id(&game.players, connection_id)
-    current_title_animation = get_title_animation_state("Player left")
+    // current_title_animation = get_title_animation_state("Player left")
+  }
+  case common.MsgHostPlayer: {
+    game.host_player_id = m.playerId
+    if (game.host_player_id == connection_id) do current_title_animation = get_title_animation_state("You're the host")
   }
   }
 

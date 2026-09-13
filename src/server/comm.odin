@@ -41,12 +41,19 @@ on_sent :: proc(op: ^nbio.Operation, connection: ^Connection) {
 
 on_disconnect :: proc(op: ^nbio.Operation, connection: ^Connection) {
   fmt.printfln("disconnecting id: %d, index: %d", connection.id, connection.index)
+  connection_id := connection.id
   nbio.close(connection.sock)
   xar.freelist_release(&s.connections, connection.index)
+
   _, idx := common.find_player_by_id(&game.players, connection.id) 
   if (idx != -1) do ordered_remove(&game.players, idx)
 
-  send_to_all(common.MsgRemovePlayer { connection.id })
+  if connection_id == game.host_player_id {
+    game.host_player_id = calc_host()
+    send_to_all(common.MsgHostPlayer{ game.host_player_id })
+  } 
+
+  send_to_all(common.MsgRemovePlayer { connection_id })
 }
 on_recv :: proc(op: ^nbio.Operation, connection: ^Connection) {
 	if op.recv.err != nil || op.recv.received == 0 {

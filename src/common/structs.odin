@@ -72,4 +72,7 @@ Game :: struct {
 	players:  [dynamic]Player,
 	started:  bool,
   current_player_turn: int,
+
+  // The host player is the player that can decide when the game start and so on
+  host_player_id: int,
 }

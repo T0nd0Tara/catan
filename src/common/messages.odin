@@ -7,6 +7,9 @@ MsgAddPlayer :: struct {
 MsgRemovePlayer :: struct {
   playerId: int
 };
+MsgHostPlayer :: struct {
+  playerId: int
+};
 MsgFullGameState :: struct {
   game: Game,
   connection_id: int,
@@ -16,6 +19,7 @@ Msg :: union {
   MsgAddPlayer,
   MsgFullGameState,
   MsgRemovePlayer,
+  MsgHostPlayer,
 };
 
 
