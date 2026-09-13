@@ -21,7 +21,6 @@ recv_loop :: proc (op: ^nbio.Operation) {
 
   recv := transmute(^nbio.Recv)op
   msg, err := common.decode_msg(recv_buff[:])
-  fmt.println(msg)
   if (err != nil) {
     fmt.println("err", err)
     return
@@ -36,12 +35,14 @@ recv_loop :: proc (op: ^nbio.Operation) {
     connection_id = m.connection_id;
     current_player = common.find_player_by_id(&game.players, connection_id)
     fmt.println("current player", current_player)
+    current_title_animation = get_title_animation_state("Welcome")
   }
   case common.MsgAddPlayer: {
     assert(server_initialized, "Got MsgAddPlayer before initialization")
     append(&game.players, m.player)
     current_player = common.find_player_by_id(&game.players, connection_id)
     fmt.println("appended player", m.player)
+    current_title_animation = get_title_animation_state("New player added")
   }
   }
 

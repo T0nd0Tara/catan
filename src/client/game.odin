@@ -14,6 +14,8 @@ BannerSprites: [enum {
 	MIDDLE,
 }]rl.Texture
 
+TitleSprite : rl.Texture
+
 VertexOption :: enum {
 	SETTELMENT = auto_cast common.BuyingItem.SETTELMENT,
 	CITY       = auto_cast common.BuyingItem.CITY,
@@ -46,6 +48,8 @@ init_assets :: proc() {
 			rl.TextFormat("resources/banner/banner-%s.png", strings.to_lower(type_name)),
 		)
 	}
+  TitleSprite = rl.LoadTexture("resources/banner/title-bg.png")
+  
 
 	for type in VertexOption {
 		type_name := fmt.aprintf("%v", type)
@@ -72,6 +76,7 @@ delete_assets :: proc() {
 	for tex in VertexSprites do rl.UnloadTexture(tex)
 
   rl.UnloadTexture(BackCardSprite)
+  rl.UnloadTexture(TitleSprite)
 	rl.UnloadFont(MainFont)
 }
 
@@ -92,5 +97,5 @@ draw_game :: proc() {
   draw_oponents()
 	draw_store()
 	draw_cards()
-
+  draw_title()
 }

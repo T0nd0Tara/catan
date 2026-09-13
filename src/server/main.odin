@@ -70,6 +70,5 @@ on_accept :: proc(op: ^nbio.Operation, s: ^Server) {
   send_to_all_except({connection.id}, common.MsgAddPlayer {
     player = game.players[player_idx]
   })
-
 }
 

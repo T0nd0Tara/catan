@@ -20,6 +20,8 @@ MAX_FPS := 120
 wanted_frame_time : time.Duration = time.Second / time.Duration(MAX_FPS)
 
 game_loop :: proc(op: ^nbio.Operation) {
+  defer free_all(context.temp_allocator) 
+
   should_quit ||= rl.WindowShouldClose()
   if should_quit do return
   start_frame_time := time.now()
