@@ -43,9 +43,9 @@ game_loop :: proc(op: ^nbio.Operation) {
   }
 
 	dt := rl.GetFrameTime()
-	fps := 1.0 / dt
+	fps := rl.GetFPS()
 	rl.DrawText(rl.TextFormat("dt: %f", dt), 0, 0, 20, rl.WHITE)
-	rl.DrawText(rl.TextFormat("fps: %f", fps), 0, 30, 20, rl.WHITE)
+	rl.DrawText(rl.TextFormat("fps: %d", fps), 0, 30, 20, rl.WHITE)
 }
 main :: proc() {
 	err := nbio.acquire_thread_event_loop()
