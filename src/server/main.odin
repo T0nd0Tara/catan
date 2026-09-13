@@ -65,22 +65,11 @@ on_accept :: proc(op: ^nbio.Operation, s: ^Server) {
 
   player_idx := add_player(connection.id)
   send(connection, common.MsgFullGameState{ game, connection.id })
+	nbio.recv_poly(connection.sock, {connection.buf[:]}, connection, on_recv)
 
   send_to_all_except({connection.id}, common.MsgAddPlayer {
     player = game.players[player_idx]
   })
 
-}
-
-on_disconnect :: proc(op: ^nbio.Operation, connection: ^Connection) {
-  fmt.printfln("disconnecting id: %d, index: %d", connection.id, connection.index)
-  nbio.close(connection.sock)
-  xar.freelist_release(&s.connections, connection.index)
-}
-on_recv :: proc(op: ^nbio.Operation, connection: ^Connection) {
-	if op.recv.err != nil || op.recv.received == 0 {
-    on_disconnect(op, connection)
-		return
-	}
 }
 
