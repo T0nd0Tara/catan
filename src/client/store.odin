@@ -106,8 +106,8 @@ draw_store :: proc() {
 		current_item_size := item_size * item_animation
 		tex := StoreSprites[item]
 		hover_rect: rl.Rectangle = {
-			x      = item_pos[0],
-			y      = item_pos[1],
+			x      = item_pos[0] - item_size / 2,
+			y      = item_pos[1] - item_size / 2,
 			width  = current_item_size,
 			height = current_item_size * f32(tex.height) / f32(tex.width),
 		}
