@@ -4,6 +4,9 @@ import "core:encoding/cbor"
 MsgAddPlayer :: struct {
   player: Player
 };
+MsgRemovePlayer :: struct {
+  playerId: int
+};
 MsgFullGameState :: struct {
   game: Game,
   connection_id: int,
@@ -12,6 +15,7 @@ MsgFullGameState :: struct {
 Msg :: union {
   MsgAddPlayer,
   MsgFullGameState,
+  MsgRemovePlayer,
 };
 
 

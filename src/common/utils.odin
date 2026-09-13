@@ -9,9 +9,9 @@ append_ptr :: proc(arr: ^[$N]^$T, elem: ^T) -> bool {
   return false;
 }
 
-find_player_by_id :: proc(players: ^[dynamic]Player, id: int) -> ^Player {
-  for &p in players {
-    if (p.id == id) do return &p
+find_player_by_id :: proc(players: ^[dynamic]Player, id: int) -> (^Player, int) {
+  for i in 0..<len(players) {
+    if (players[i].id == id) do return &players[i], i
   }
-  return nil
+  return nil, -1
 }

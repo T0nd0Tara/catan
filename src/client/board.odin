@@ -53,7 +53,7 @@ draw_pieces :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 		pos[1] -= scale * f32(tex.height) / 2
 
 
-    player := common.find_player_by_id(&game.players, vertex.obj.playerId)
+    player, _ := common.find_player_by_id(&game.players, vertex.obj.playerId)
     if (player != nil) do rl.DrawTextureEx(tex, pos, 0, scale, player.color);
 	}
 

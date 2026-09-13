@@ -33,16 +33,23 @@ recv_loop :: proc (op: ^nbio.Operation) {
     calculate_available_vertices_for_settelments()
 
     connection_id = m.connection_id;
-    current_player = common.find_player_by_id(&game.players, connection_id)
+    current_player, _ = common.find_player_by_id(&game.players, connection_id)
     fmt.println("current player", current_player)
     current_title_animation = get_title_animation_state("Welcome")
   }
   case common.MsgAddPlayer: {
     assert(server_initialized, "Got MsgAddPlayer before initialization")
     append(&game.players, m.player)
-    current_player = common.find_player_by_id(&game.players, connection_id)
+    current_player, _ = common.find_player_by_id(&game.players, connection_id)
     fmt.println("appended player", m.player)
     current_title_animation = get_title_animation_state("New player added")
+  }
+  case common.MsgRemovePlayer: {
+    _, idx := common.find_player_by_id(&game.players, m.playerId)
+    if (idx == -1) do break;
+    ordered_remove(&game.players, idx)
+    current_player, _ = common.find_player_by_id(&game.players, connection_id)
+    current_title_animation = get_title_animation_state("Player left")
   }
   }
 
