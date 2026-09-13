@@ -7,9 +7,9 @@ BuyingItem :: enum {
 	ROAD,
 	CARD,
 }
-costs: [BuyingItem][5]ResourceType = {
-	.ROAD       = {.WOOD, .CLAY, nil, nil, nil},
-	.SETTELMENT = {.WOOD, .CLAY, .SHEEP, .WHEAT, nil},
+costs: [BuyingItem][dynamic; 5]ResourceType = {
+	.ROAD       = {.WOOD, .CLAY },
+	.SETTELMENT = {.WOOD, .CLAY, .SHEEP, .WHEAT },
 	.CITY       = {.STONE, .STONE, .STONE, .WHEAT, .WHEAT},
-	.CARD       = {.STONE, .SHEEP, .WHEAT, nil, nil},
+	.CARD       = {.STONE, .SHEEP, .WHEAT },
 }
