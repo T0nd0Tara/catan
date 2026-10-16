@@ -27,7 +27,7 @@ game_loop :: proc(op: ^nbio.Operation) {
   start_frame_time := time.now()
   defer {
     end_frame_time := time.now()
-    frame_time := time.diff(start_frame_time, end_frame_time)
+    frame_time := time.diff(end_frame_time, start_frame_time)
     time_to_wait : time.Duration = math.max(wanted_frame_time - frame_time, 0)
     nbio.timeout(time_to_wait, game_loop)
   }
