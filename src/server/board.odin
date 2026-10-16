@@ -175,9 +175,13 @@ init_board :: proc() {
 		}
 	}
 
-  for &edge in game.edges {
+  for i in 0..<len(game.edges) {
+    edge := &game.edges[i]
     append(&game.vertices[edge.vertices[0]].vertices, edge.vertices[1])
     append(&game.vertices[edge.vertices[1]].vertices, edge.vertices[0])
+
+    append(&game.vertices[edge.vertices[0]].edges, i);
+    append(&game.vertices[edge.vertices[1]].edges, i);
   }
 
 	{

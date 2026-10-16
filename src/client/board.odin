@@ -37,13 +37,32 @@ draw_bought_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2
 	}
 }
 
+get_edge_side :: proc(edge: ^common.Edge) -> EdgeSide {
+  v0 := &game.vertices[edge.vertices[0]]
+  v1 := &game.vertices[edge.vertices[1]]
+  diff := v1.pos - v0.pos
+  if math.abs(diff.x) < 1e-5 do return .FRONT
+  if math.sign(diff.y) != math.sign(diff.x) do return .LEFT
+  return .RIGHT
+}
+draw_road :: proc(edge: ^common.Edge, radius: f32, tint: rl.Color, screen_center: ^rl.Vector2) {
+  side := get_edge_side(edge)
+  tex := PathSprites[side]
+  scale : f32 = radius / f32(max(tex.width, tex.height)) / 1.2
+  p0 := pos_to_screen(game.vertices[edge.vertices[0]].pos, radius, screen_center)
+  p1 := pos_to_screen(game.vertices[edge.vertices[1]].pos, radius, screen_center)
+
+  position : rl.Vector2 = { math.min(p0.x, p1.x), math.min(p0.y, p1.y) }
+
+  rl.DrawTextureEx(tex, position, 0, scale, tint)
+}
 draw_pieces :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	// for edge, index in game.edges {
 	//    if edge.obj.type == .NONE do continue;
 	//
 	//
 	//  }
-	for vertex, index in game.vertices {
+	for &vertex, index in game.vertices {
 		if vertex.obj.type == .NONE do continue
 		tex := VertexSprites[auto_cast vertex.obj.type]
 		scale := radius / f32(max(tex.width, tex.height)) / 1.5
@@ -57,21 +76,22 @@ draw_pieces :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
     if (player != nil) do rl.DrawTextureEx(tex, pos, 0, scale, player.color);
 	}
 
-	// for edge, index in game.edges {
-	// 	p0 := pos_to_screen(edge.vertices[0].pos, radius, &screen_center)
-	// 	p1 := pos_to_screen(edge.vertices[1].pos, radius, &screen_center)
-	// 	rl.DrawLineEx(p0, p1, 5, rl.RED)
-	// 	rl.DrawText(rl.TextFormat("%i", index),
-	//      auto_cast rl.Lerp(p0[0], p1[0], 0.5),
-	//      auto_cast rl.Lerp(p0[1], p1[1], 0.5),
-	//      5, rl.BLACK)
-	// }
-	//
-	// for vertex, index in game.vertices {
-	// 	pos := pos_to_screen(vertex.pos, radius, &screen_center)
-	// 	rl.DrawCircle(auto_cast pos[0], auto_cast pos[1], 10, rl.WHITE)
-	// 	rl.DrawText(rl.TextFormat("%i", index), auto_cast pos[0], auto_cast pos[1], 5, rl.RED)
-	//
+  for &edge, index in game.edges {
+    if edge.obj.type == .NONE do continue
+
+    player, _ := common.find_player_by_id(&game.players, edge.obj.playerId)
+    if player == nil do continue
+    if edge.obj.type == .ROAD {
+      draw_road(&edge, radius, player.color, screen_center)
+      continue
+    }
+  }
+
+      // for vertex, index in game.vertices {
+      // 	pos := pos_to_screen(vertex.pos, radius, &screen_center)
+      // 	rl.DrawCircle(auto_cast pos[0], auto_cast pos[1], 10, rl.WHITE)
+      // 	rl.DrawText(rl.TextFormat("%i", index), auto_cast pos[0], auto_cast pos[1], 5, rl.RED)
+      //
 	// }
 }
 pos_to_screen := proc(pos: rl.Vector2, radius: f32, screen_center: ^rl.Vector2) -> rl.Vector2 {

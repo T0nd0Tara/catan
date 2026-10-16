@@ -30,7 +30,7 @@ recv_loop :: proc (op: ^nbio.Operation) {
   case common.MsgFullGameState: {
     server_initialized = true
     game = m.game
-    calculate_available_vertices_for_settelments()
+    calculate_available_placement_locations()
 
     connection_id = m.connection_id;
     current_player, _ = common.find_player_by_id(&game.players, connection_id)

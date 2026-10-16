@@ -48,6 +48,7 @@ Vertex :: struct {
 	pos: rl.Vector2,
 	obj: VertexObject,
   vertices: [dynamic; 3]int, // between 2 - 3
+  edges: [dynamic; 3]int, // between 2 - 3
 }
 
 Edge :: struct {

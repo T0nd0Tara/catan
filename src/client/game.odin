@@ -20,7 +20,14 @@ VertexOption :: enum {
 	SETTELMENT = auto_cast common.BuyingItem.SETTELMENT,
 	CITY       = auto_cast common.BuyingItem.CITY,
 }
-VertexSprites: #sparse[VertexOption]rl.Texture
+VertexSprites: [VertexOption]rl.Texture
+
+EdgeSide :: enum {
+  LEFT, 
+  RIGHT,
+  FRONT
+}
+PathSprites : [EdgeSide]rl.Texture
 
 StoreSprites: [common.BuyingItem]^rl.Texture
 
@@ -58,6 +65,13 @@ init_assets :: proc() {
 		)
 	}
 
+	for _, type in PathSprites {
+		type_name := fmt.aprintf("%v", type)
+		PathSprites[type] = rl.LoadTexture(
+			rl.TextFormat("resources/pieces/path-%s.png", strings.to_lower(type_name)),
+		)
+	}
+
 	MainFont = rl.LoadFontEx("resources/fonts/Beaver Punch.otf", 256, nil, 0)
 
 	// for &player, i in game.players {
@@ -67,6 +81,7 @@ init_assets :: proc() {
 
 	StoreSprites[.SETTELMENT] = &VertexSprites[.SETTELMENT]
 	StoreSprites[.CITY] = &VertexSprites[.CITY]
+	StoreSprites[.ROAD] = &PathSprites[.LEFT]
 }
 
 delete_assets :: proc() {
