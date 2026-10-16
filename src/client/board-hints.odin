@@ -64,14 +64,13 @@ draw_road_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) 
       if (rl.IsMouseButtonPressed(.LEFT)) {
         bought_item = nil;
         edge.obj = { type = .ROAD, playerId = current_player.id };
-        calculate_available_placement_locations();
-        return;
       }
     } else {
       rl.DrawLineEx(start_pos, end_pos, thickness, rl.WHITE)
     }
     
   }
+  if bought_item == nil do calculate_available_placement_locations();
 }
 
 draw_city_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
@@ -94,8 +93,7 @@ draw_settelment_hints :: proc(
     if selected && rl.IsMouseButtonPressed(.LEFT) {
       bought_item = nil;
       vertex.obj = { type = .SETTELMENT, playerId = current_player.id };
-      calculate_available_placement_locations();
-      return;
     }
 	} 
+  if bought_item == nil do calculate_available_placement_locations();
 }
