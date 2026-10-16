@@ -48,11 +48,14 @@ get_edge_side :: proc(edge: ^common.Edge) -> EdgeSide {
 draw_road :: proc(edge: ^common.Edge, radius: f32, tint: rl.Color, screen_center: ^rl.Vector2) {
   side := get_edge_side(edge)
   tex := PathSprites[side]
-  scale : f32 = radius / f32(max(tex.width, tex.height)) / 1.2
   p0 := pos_to_screen(game.vertices[edge.vertices[0]].pos, radius, screen_center)
   p1 := pos_to_screen(game.vertices[edge.vertices[1]].pos, radius, screen_center)
+  len2 := rl.Vector2DistanceSqr(p0, p1)
+  tex_len2 := tex.width * tex.width + tex.height * tex.height
+  scale := math.sqrt(len2 / f32(tex_len2))
 
-  position : rl.Vector2 = { math.min(p0.x, p1.x), math.min(p0.y, p1.y) }
+  position : rl.Vector2 = { math.min(p0.x, p1.x), math.min(p0.y, p1.y) } 
+  if side == .FRONT do position.x -= f32(tex.width) * scale / 2
 
   rl.DrawTextureEx(tex, position, 0, scale, tint)
 }
@@ -62,6 +65,16 @@ draw_pieces :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	//
 	//
 	//  }
+  for &edge, index in game.edges {
+    if edge.obj.type == .NONE do continue
+
+    player, _ := common.find_player_by_id(&game.players, edge.obj.playerId)
+    if player == nil do continue
+    if edge.obj.type == .ROAD {
+      draw_road(&edge, radius, player.color, screen_center)
+      continue
+    }
+  }
 	for &vertex, index in game.vertices {
 		if vertex.obj.type == .NONE do continue
 		tex := VertexSprites[auto_cast vertex.obj.type]
@@ -75,17 +88,6 @@ draw_pieces :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
     player, _ := common.find_player_by_id(&game.players, vertex.obj.playerId)
     if (player != nil) do rl.DrawTextureEx(tex, pos, 0, scale, player.color);
 	}
-
-  for &edge, index in game.edges {
-    if edge.obj.type == .NONE do continue
-
-    player, _ := common.find_player_by_id(&game.players, edge.obj.playerId)
-    if player == nil do continue
-    if edge.obj.type == .ROAD {
-      draw_road(&edge, radius, player.color, screen_center)
-      continue
-    }
-  }
 
       // for vertex, index in game.vertices {
       // 	pos := pos_to_screen(vertex.pos, radius, &screen_center)
@@ -107,7 +109,7 @@ draw_tiles :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 		tex := TileSprites[tile.type]
 		scale := (1.0 - padding) * w / f32(tex.width)
 		pos := pos_to_screen(tile.pos, radius, &screen_center)
-		tex_pos := rl.Vector2{pos[0] - w / 2.0, pos[1] - h / 2.0}
+		tex_pos := rl.Vector2{pos[0] - w * (1 - padding) / 2.0, pos[1] - h * (1 - padding) / 2.0}
 
 		rl.DrawTextureEx(tex, tex_pos, 0, scale, rl.WHITE)
 
