@@ -74,6 +74,32 @@ draw_road_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) 
 }
 
 draw_city_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+  vertex_radius := radius / 8.0
+
+  mouse_pos := rl.GetMousePosition();
+  for &row in board_renderer.vertices {
+    for &vertex in row {
+      pos := pos_to_screen(vertex.pos, radius, screen_center)
+      selected := rl.CheckCollisionPointCircle(pos, mouse_pos, vertex_radius);
+      if !selected do continue;
+
+      if  rl.IsMouseButtonPressed(.LEFT) {
+        bought_item = nil;
+
+        for &game_vertex in game.vertices  {
+          if rl.Vector2Equals(game_vertex.pos, vertex.pos) {
+            game_vertex.obj = { type = .CITY, playerId = current_player.id };
+            break;
+          }
+        }
+      } else {
+        new_vertex := new_clone(vertex^, context.temp_allocator)
+        new_vertex.obj.type = .CITY
+
+        vertex = new_vertex
+      }
+    }
+  }
 }
 
 draw_settelment_hints :: proc(

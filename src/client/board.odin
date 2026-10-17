@@ -14,14 +14,16 @@ draw_board :: proc() {
 
   sync_board_renderer()
 	draw_tiles(w, h, radius, gap, &screen_center)
-  draw_board_pieces(w, h, radius, gap, &screen_center)
 	draw_bought_hints(w, h, radius, gap, &screen_center)
+
+  draw_board_pieces(w, h, radius, gap, &screen_center)
+
+  if bought_item != nil do draw_store_item(bought_item, rl.GetMousePosition(), 1, rl.Fade(current_player.color, 0.5))
 }
 
 draw_bought_hints :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
 	if bought_item == nil do return
 
-  draw_store_item(bought_item, rl.GetMousePosition(), 1, rl.Fade(current_player.color, 0.5))
 
 	switch bought_item {
 	case .CARD:
