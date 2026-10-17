@@ -4,15 +4,14 @@ import "../common/"
 
 // A structure to keep track of everything that needs rendering on the board, so it can be manipulated mid-frame
 
-@(private="file")
 board_renderer : struct {
-  vertecies: [12][dynamic; 6]^common.Vertex,
+  vertices: [12][dynamic; 6]^common.Vertex,
   edges: [11][dynamic; 10]^common.Edge,
 };
 
 @(private="file")
-draw_vertecies :: proc(vertecies: ^[dynamic; $N]^common.Vertex, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
-  for &vertex in vertecies {
+draw_vertices :: proc(vertices: ^[dynamic; $N]^common.Vertex, w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
+  for &vertex in vertices {
     if vertex == nil || vertex.obj.type == .NONE do continue;
     tex := VertexSprites[auto_cast vertex.obj.type]
     scale := radius / f32(max(tex.width, tex.height)) / 1.5
@@ -41,11 +40,11 @@ draw_edges :: proc(edges: ^[dynamic; $N]^common.Edge, w, h, radius, padding: f32
   }
 }
 sync_board_renderer :: proc() {
-  for &row in board_renderer.vertecies do clear(&row)
+  for &row in board_renderer.vertices do clear(&row)
   for &row in board_renderer.edges do clear(&row)
   for &vertex in game.vertices {
     if vertex.obj.type == .NONE do continue;
-    append(&board_renderer.vertecies[vertex.row], &vertex)
+    append(&board_renderer.vertices[vertex.row], &vertex)
   }
   for &edge in game.edges {
     if edge.obj.type == .NONE do continue;
@@ -54,10 +53,10 @@ sync_board_renderer :: proc() {
 }
 
 draw_board_pieces :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
-  draw_vertecies(&board_renderer.vertecies[0], w, h, radius, padding, screen_center)
+  draw_vertices(&board_renderer.vertices[0], w, h, radius, padding, screen_center)
   for i in 0..<11 {
     draw_edges(&board_renderer.edges[i], w, h, radius, padding, screen_center)
-    draw_vertecies(&board_renderer.vertecies[i + 1], w, h, radius, padding, screen_center)
+    draw_vertices(&board_renderer.vertices[i + 1], w, h, radius, padding, screen_center)
   }
 }
 
