@@ -1,7 +1,6 @@
 package client
 import "../common"
 import "core:math"
-import "core:fmt"
 import rl "vendor:raylib"
 
 draw_board :: proc() {
@@ -13,9 +12,9 @@ draw_board :: proc() {
 	h := 2 * radius
 	w := 2 * radius * math.cos_f32(math.PI / 6.0)
 
-
+  sync_board_renderer()
 	draw_tiles(w, h, radius, gap, &screen_center)
-	draw_pieces(w, h, radius, gap, &screen_center)
+  draw_board_pieces(w, h, radius, gap, &screen_center)
 	draw_bought_hints(w, h, radius, gap, &screen_center)
 }
 
@@ -58,43 +57,6 @@ draw_road :: proc(edge: ^common.Edge, radius: f32, tint: rl.Color, screen_center
   if side == .FRONT do position.x -= f32(tex.width) * scale / 2
 
   rl.DrawTextureEx(tex, position, 0, scale, tint)
-}
-draw_pieces :: proc(w, h, radius, padding: f32, screen_center: ^rl.Vector2) {
-	// for edge, index in game.edges {
-	//    if edge.obj.type == .NONE do continue;
-	//
-	//
-	//  }
-  for &edge, index in game.edges {
-    if edge.obj.type == .NONE do continue
-
-    player, _ := common.find_player_by_id(&game.players, edge.obj.playerId)
-    if player == nil do continue
-    if edge.obj.type == .ROAD {
-      draw_road(&edge, radius, player.color, screen_center)
-      continue
-    }
-  }
-	for &vertex, index in game.vertices {
-		if vertex.obj.type == .NONE do continue
-		tex := VertexSprites[auto_cast vertex.obj.type]
-		scale := radius / f32(max(tex.width, tex.height)) / 1.5
-		pos := pos_to_screen(vertex.pos, radius, screen_center)
-
-		pos[0] -= scale * f32(tex.width) / 2
-		pos[1] -= scale * f32(tex.height) / 2
-
-
-    player, _ := common.find_player_by_id(&game.players, vertex.obj.playerId)
-    if (player != nil) do rl.DrawTextureEx(tex, pos, 0, scale, player.color);
-	}
-
-      // for vertex, index in game.vertices {
-      // 	pos := pos_to_screen(vertex.pos, radius, &screen_center)
-      // 	rl.DrawCircle(auto_cast pos[0], auto_cast pos[1], 10, rl.WHITE)
-      // 	rl.DrawText(rl.TextFormat("%i", index), auto_cast pos[0], auto_cast pos[1], 5, rl.RED)
-      //
-	// }
 }
 pos_to_screen := proc(pos: rl.Vector2, radius: f32, screen_center: ^rl.Vector2) -> rl.Vector2 {
 	return rl.Vector2 {

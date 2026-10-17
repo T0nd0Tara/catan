@@ -142,9 +142,11 @@ init_board :: proc() {
 
 	{
 		i: int = 0
+		row: int = 0
 		for y in 0 ..< common.TILE_ROWS {
 			is_offset := y % 2 == 1
 			row_length := get_row_length(y)
+      defer row += 2
 
 			even_offset: f32 = 0.5 if is_offset else 0
 
@@ -171,17 +173,30 @@ init_board :: proc() {
 				game.vertices[vertices[2]].pos = {pos[0] + r * cos30, pos[1] - r * sin30}
 				game.vertices[vertices[3]].pos = {pos[0] - r * cos30, pos[1] + r * sin30}
 				game.vertices[vertices[4]].pos = {pos[0] + r * cos30, pos[1] + r * sin30}
+
+
+				game.vertices[vertices[0]].row = row
+				game.vertices[vertices[5]].row = row + 3
+
+				game.vertices[vertices[1]].row = row + 1
+				game.vertices[vertices[2]].row = row + 1
+				game.vertices[vertices[3]].row = row + 2
+				game.vertices[vertices[4]].row = row + 2
 			}
 		}
 	}
 
   for i in 0..<len(game.edges) {
     edge := &game.edges[i]
-    append(&game.vertices[edge.vertices[0]].vertices, edge.vertices[1])
-    append(&game.vertices[edge.vertices[1]].vertices, edge.vertices[0])
+    v0 := &game.vertices[edge.vertices[0]]
+    v1 := &game.vertices[edge.vertices[1]]
+    append(&v0.vertices, edge.vertices[1])
+    append(&v1.vertices, edge.vertices[0])
 
-    append(&game.vertices[edge.vertices[0]].edges, i);
-    append(&game.vertices[edge.vertices[1]].edges, i);
+    append(&v0.edges, i);
+    append(&v1.edges, i);
+
+    edge.row = math.min(v0.row, v1.row)
   }
 
 	{

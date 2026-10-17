@@ -46,6 +46,7 @@ Tile :: struct {
 
 Vertex :: struct {
 	pos: rl.Vector2,
+  row: int,
 	obj: VertexObject,
   vertices: [dynamic; 3]int, // between 2 - 3
   edges: [dynamic; 3]int, // between 2 - 3
@@ -53,6 +54,7 @@ Vertex :: struct {
 
 Edge :: struct {
 	vertices: [2]int,
+  row: int,
 	obj:      EdgeObject,
 }
 
